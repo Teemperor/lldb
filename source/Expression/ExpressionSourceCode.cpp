@@ -257,7 +257,8 @@ bool ExpressionSourceCode::GetText(std::string &text,
 
     ConstString object_name;
     if (Language::LanguageIsCPlusPlus(frame->GetLanguage())) {
-      if (target->GetInjectLocalVariables(&exe_ctx)) {
+      if (target->GetInjectLocalVariables(&exe_ctx) && /*skip this for now*/false) {
+        // We need to do this later.
         lldb::VariableListSP var_list_sp =
             frame->GetInScopeVariableList(false, true);
         AddLocalVariableDecls(var_list_sp, lldb_local_var_decls);
