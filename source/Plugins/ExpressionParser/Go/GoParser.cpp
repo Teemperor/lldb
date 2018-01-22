@@ -439,8 +439,10 @@ GoASTExpr *GoParser::CompositeLit() {
   if (!type)
     return r.error();
   GoASTCompositeLit *lit = LiteralValue();
-  if (!lit)
+  if (!lit) {
+    delete type;
     return r.error();
+  }
   lit->SetType(type);
   return lit;
 }
