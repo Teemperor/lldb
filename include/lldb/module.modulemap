@@ -5,13 +5,51 @@ module lldb_API {
   module * { export * }
 }
 
-/* TODO: OS specific files in here.
 module lldb_Host {
   requires cplusplus
 
-  umbrella "Host"
-  module * { export * }
-} */
+  module ConnectionFileDescriptor { header "Host/ConnectionFileDescriptor.h" export * }
+  module Debug { header "Host/Debug.h" export * }
+  module Editline { header "Host/Editline.h" export * }
+  module FileCache { header "Host/FileCache.h" export * }
+  module File { header "Host/File.h" export * }
+  module FileSystem { header "Host/FileSystem.h" export * }
+  module HostGetOpt { header "Host/HostGetOpt.h" export * }
+  module Host { header "Host/Host.h" export * }
+  module HostInfoBase { header "Host/HostInfoBase.h" export * }
+  module HostInfo { header "Host/HostInfo.h" export * }
+  module HostNativeProcessBase { header "Host/HostNativeProcessBase.h" export * }
+  module HostNativeProcess { header "Host/HostNativeProcess.h" export * }
+  module HostNativeThreadBase { header "Host/HostNativeThreadBase.h" export * }
+  module HostNativeThreadForward { header "Host/HostNativeThreadForward.h" export * }
+  module HostNativeThread { header "Host/HostNativeThread.h" export * }
+  module HostProcess { header "Host/HostProcess.h" export * }
+  module HostThread { header "Host/HostThread.h" export * }
+  module LockFileBase { header "Host/LockFileBase.h" export * }
+  module LockFile { header "Host/LockFile.h" export * }
+  module MainLoopBase { header "Host/MainLoopBase.h" export * }
+  module MainLoop { header "Host/MainLoop.h" export * }
+  module MonitoringProcessLauncher { header "Host/MonitoringProcessLauncher.h" export * }
+  module OptionParser { header "Host/OptionParser.h" export * }
+  module PipeBase { header "Host/PipeBase.h" export * }
+  module Pipe { header "Host/Pipe.h" export * }
+  module PosixApi { header "Host/PosixApi.h" export * }
+  module Predicate { header "Host/Predicate.h" export * }
+  module ProcessLauncher { header "Host/ProcessLauncher.h" export * }
+  module ProcessRunLock { header "Host/ProcessRunLock.h" export * }
+  module PseudoTerminal { header "Host/PseudoTerminal.h" export * }
+  module SocketAddress { header "Host/SocketAddress.h" export * }
+  module Socket { header "Host/Socket.h" export * }
+  module StringConvert { header "Host/StringConvert.h" export * }
+  module Symbols { header "Host/Symbols.h" export * }
+  module TaskPool { header "Host/TaskPool.h" export * }
+  module Terminal { header "Host/Terminal.h" export * }
+  module ThreadLauncher { header "Host/ThreadLauncher.h" export * }
+  module Time { header "Host/Time.h" export * }
+  module XML { header "Host/XML.h" export * }
+
+  export *
+}
 
 module lldb_Initialization {
   requires cplusplus
