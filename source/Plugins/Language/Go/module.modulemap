@@ -1,0 +1,4 @@
+module lldb_Languages_Go {
+  module GoFormatterFunctions { header "GoFormatterFunctions.h" export * }
+  module GoLanguage { header "GoLanguage.h" export * }
+}

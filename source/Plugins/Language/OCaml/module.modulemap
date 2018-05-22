@@ -1,0 +1,3 @@
+module lldb_Languages_OCaml {
+  module OCamlLanguage { header "OCamlLanguage.h" export * }
+}

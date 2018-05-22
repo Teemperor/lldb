@@ -1,0 +1,10 @@
+module lldb_osx_cfcpp {
+  module CFCBundle { header "CFCBundle.h" export * }
+  module CFCData { header "CFCData.h" export * }
+  module CFCMutableArray { header "CFCMutableArray.h" export * }
+  module CFCMutableDictionary { header "CFCMutableDictionary.h" export * }
+  module CFCMutableSet { header "CFCMutableSet.h" export * }
+  module CFCReleaser { header "CFCReleaser.h" export * }
+  module CFCString { header "CFCString.h" export * }
+  module CoreFoundationCPP { header "CoreFoundationCPP.h" export * }
+}

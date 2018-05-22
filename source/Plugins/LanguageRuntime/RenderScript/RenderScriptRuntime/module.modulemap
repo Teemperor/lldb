@@ -1,0 +1,6 @@
+module lldb_RenderScriptRuntime {
+  module RenderScriptExpressionOpts { header "RenderScriptExpressionOpts.h" export * }
+  module RenderScriptRuntime { header "RenderScriptRuntime.h" export * }
+  module RenderScriptScriptGroup { header "RenderScriptScriptGroup.h" export * }
+  module RenderScriptx86ABIFixups { header "RenderScriptx86ABIFixups.h" export * }
+}

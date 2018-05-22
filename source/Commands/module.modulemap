@@ -1,0 +1,29 @@
+module lldb_Commands {
+  module CommandObjectApropos { header "CommandObjectApropos.h" export * }
+  module CommandObjectBreakpointCommand { header "CommandObjectBreakpointCommand.h" export * }
+  module CommandObjectBreakpoint { header "CommandObjectBreakpoint.h" export * }
+  module CommandObjectBugreport { header "CommandObjectBugreport.h" export * }
+  module CommandObjectCommands { header "CommandObjectCommands.h" export * }
+  module CommandObjectDisassemble { header "CommandObjectDisassemble.h" export * }
+  module CommandObjectExpression { header "CommandObjectExpression.h" export * }
+  module CommandObjectFrame { header "CommandObjectFrame.h" export * }
+  module CommandObjectGUI { header "CommandObjectGUI.h" export * }
+  module CommandObjectHelp { header "CommandObjectHelp.h" export * }
+  module CommandObjectLanguage { header "CommandObjectLanguage.h" export * }
+  module CommandObjectLog { header "CommandObjectLog.h" export * }
+  module CommandObjectMemory { header "CommandObjectMemory.h" export * }
+  module CommandObjectPlatform { header "CommandObjectPlatform.h" export * }
+  module CommandObjectPlugin { header "CommandObjectPlugin.h" export * }
+  module CommandObjectProcess { header "CommandObjectProcess.h" export * }
+  module CommandObjectQuit { header "CommandObjectQuit.h" export * }
+  module CommandObjectRegister { header "CommandObjectRegister.h" export * }
+  module CommandObjectSettings { header "CommandObjectSettings.h" export * }
+  module CommandObjectSource { header "CommandObjectSource.h" export * }
+  module CommandObjectStats { header "CommandObjectStats.h" export * }
+  module CommandObjectTarget { header "CommandObjectTarget.h" export * }
+  module CommandObjectThread { header "CommandObjectThread.h" export * }
+  module CommandObjectType { header "CommandObjectType.h" export * }
+  module CommandObjectVersion { header "CommandObjectVersion.h" export * }
+  module CommandObjectWatchpointCommand { header "CommandObjectWatchpointCommand.h" export * }
+  module CommandObjectWatchpoint { header "CommandObjectWatchpoint.h" export * }
+}

@@ -1,0 +1,9 @@
+module lldb_ProcessMinidump {
+  module MinidumpParser { header "MinidumpParser.h" export * }
+  module MinidumpTypes { header "MinidumpTypes.h" export * }
+  module NtStructures { header "NtStructures.h" export * }
+  module ProcessMinidump { header "ProcessMinidump.h" export * }
+  module RegisterContextMinidump_x86_32 { header "RegisterContextMinidump_x86_32.h" export * }
+  module RegisterContextMinidump_x86_64 { header "RegisterContextMinidump_x86_64.h" export * }
+  module ThreadMinidump { header "ThreadMinidump.h" export * }
+}

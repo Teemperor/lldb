@@ -1,0 +1,5 @@
+module lldb_PlatformAndroid {
+  module AdbClient { header "AdbClient.h" export * }
+  module PlatformAndroid { header "PlatformAndroid.h" export * }
+  module PlatformAndroidRemoteGDBServer { header "PlatformAndroidRemoteGDBServer.h" export * }
+}
