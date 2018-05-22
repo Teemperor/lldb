@@ -1,0 +1,82 @@
+module lldb_API {
+  requires cplusplus
+
+  umbrella "API"
+  module * { export * }
+}
+
+/* TODO: OS specific files in here.
+module lldb_Host {
+  requires cplusplus
+
+  umbrella "Host"
+  module * { export * }
+} */
+
+module lldb_Initialization {
+  requires cplusplus
+
+  umbrella "Initialization"
+  module * { export * }
+}
+
+
+module lldb_Wrapper {
+
+  module lldb_Breakpoint {
+    requires cplusplus
+
+    umbrella "Breakpoint"
+    module * { export * }
+  }
+
+  module lldb_Core {
+    requires cplusplus
+
+    umbrella "Core"
+    module * { export * }
+  }
+
+
+  module lldb_DataFormatters {
+    requires cplusplus
+
+    umbrella "DataFormatters"
+    module * { export * }
+  }
+
+  module lldb_Expression {
+    requires cplusplus
+
+    umbrella "Expression"
+    module * { export * }
+  }
+
+  module lldb_Interpreter {
+    requires cplusplus
+
+    umbrella "Interpreter"
+    module * { export * }
+  }
+
+  module lldb_Symbol {
+    requires cplusplus
+
+    umbrella "Symbol"
+    module * { export * }
+  }
+  module lldb_Target {
+    requires cplusplus
+
+    umbrella "Target"
+    module * { export * }
+  }
+}
+
+
+module lldb_Utility {
+  requires cplusplus
+
+  umbrella "Utility"
+  module * { export * }
+}
