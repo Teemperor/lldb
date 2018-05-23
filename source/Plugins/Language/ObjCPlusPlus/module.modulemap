@@ -1,3 +1,0 @@
-module lldb_Languages_ObjCPlusPlus {
-  module ObjCPlusPlusLanguage { header "ObjCPlusPlusLanguage.h" export * }
-}

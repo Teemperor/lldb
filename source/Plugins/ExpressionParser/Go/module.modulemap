@@ -1,6 +1,0 @@
-module lldb_ExpressionParserGo {
-  module GoAST { header "GoAST.h" export * }
-  module GoLexer { header "GoLexer.h" export * }
-  module GoParser { header "GoParser.h" export * }
-  module GoUserExpression { header "GoUserExpression.h" export * }
-}

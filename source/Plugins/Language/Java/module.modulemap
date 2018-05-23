@@ -1,4 +1,0 @@
-module lldb_Languages_Java {
-  module JavaFormatterFunctions { header "JavaFormatterFunctions.h" export * }
-  module JavaLanguage { header "JavaLanguage.h" export * }
-}

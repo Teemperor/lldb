@@ -1,9 +1,0 @@
-module lldb_Languages_CPlusPlus {
-  module BlockPointer { header "BlockPointer.h" export * }
-  module CPlusPlusLanguage { header "CPlusPlusLanguage.h" export * }
-  module CPlusPlusNameParser { header "CPlusPlusNameParser.h" export * }
-  module CxxStringTypes { header "CxxStringTypes.h" export * }
-  module LibCxxAtomic { header "LibCxxAtomic.h" export * }
-  module LibCxx { header "LibCxx.h" export * }
-  module LibStdcpp { header "LibStdcpp.h" export * }
-}

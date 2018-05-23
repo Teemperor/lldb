@@ -1,9 +1,0 @@
-module lldb_Languages_ObjC {
-  module CF { header "CF.h" export * }
-  module Cocoa { header "Cocoa.h" export * }
-  module CoreMedia { header "CoreMedia.h" export * }
-  module NSDictionary { header "NSDictionary.h" export * }
-  module NSSet { header "NSSet.h" export * }
-  module NSString { header "NSString.h" export * }
-  module ObjCLanguage { header "ObjCLanguage.h" export * }
-}

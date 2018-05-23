@@ -389,6 +389,12 @@ if (NOT LLDB_DISABLE_CURSES)
     include_directories(${CURSES_INCLUDE_DIR})
 endif ()
 
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodule-map-file=${CMAKE_CURRENT_SOURCE_DIR}/source/module.modulemap")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -fno-modules-global-index")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -H")
+
+
 check_cxx_symbol_exists("__GLIBCXX__" "string" LLDB_USING_LIBSTDCXX)
 if(LLDB_USING_LIBSTDCXX)
     # There doesn't seem to be an easy way to check the library version. Instead, we rely on the
