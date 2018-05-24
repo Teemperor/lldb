@@ -1187,8 +1187,10 @@ void DataExtractor::Checksum(llvm::SmallVectorImpl<uint8_t> &dest,
 
   llvm::MD5 md5;
 
-  const llvm::ArrayRef<uint8_t> data(GetDataStart(), max_data);
-  md5.update(data);
+  if (GetDataStart()) {
+    const llvm::ArrayRef<uint8_t> data(GetDataStart(), max_data);
+    md5.update(data);
+  }
 
   llvm::MD5::MD5Result result;
   md5.final(result);
