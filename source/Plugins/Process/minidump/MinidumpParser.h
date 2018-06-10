@@ -91,7 +91,6 @@ public:
 
 private:
   lldb::DataBufferSP m_data_sp;
-  const MinidumpHeader *m_header;
   llvm::DenseMap<uint32_t, MinidumpLocationDescriptor> m_directory_map;
 
   MinidumpParser(

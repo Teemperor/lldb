@@ -66,7 +66,8 @@ MinidumpParser::Create(const lldb::DataBufferSP &data_buf_sp) {
 MinidumpParser::MinidumpParser(
     const lldb::DataBufferSP &data_buf_sp, const MinidumpHeader *header,
     llvm::DenseMap<uint32_t, MinidumpLocationDescriptor> &&directory_map)
-    : m_data_sp(data_buf_sp), m_header(header), m_directory_map(directory_map) {
+    : m_data_sp(data_buf_sp), m_directory_map(directory_map) {
+  (void)header;
 }
 
 llvm::ArrayRef<uint8_t> MinidumpParser::GetData() {
