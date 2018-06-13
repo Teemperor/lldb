@@ -307,6 +307,70 @@ CommandObjectExpression::~CommandObjectExpression() = default;
 
 Options *CommandObjectExpression::GetOptions() { return &m_option_group; }
 
+int CommandObjectExpression::HandleCompletion(CompletionRequest &request) {
+  EvaluateExpressionOptions options;
+  options.SetCoerceToId(m_varobj_options.use_objc);
+  options.SetLanguage(m_command_options.language);
+  options.SetExecutionPolicy(lldb_private::eExecutionPolicyNever);
+  options.SetAutoApplyFixIts(false);
+  options.SetGenerateDebugInfo(false);
+
+  // We need a valid execution context with a frame pointer for this
+  // completion, so if we don't have one we should try to make a valid
+  // execution context.
+  if (m_interpreter.GetExecutionContext().GetFramePtr() == nullptr)
+    m_interpreter.UpdateExecutionContext(nullptr);
+
+  // This didn't work, so let's get out before we start doing things that
+  // expect a valid frame pointer.
+  if (m_interpreter.GetExecutionContext().GetFramePtr() == nullptr)
+    return 0;
+
+  ExecutionContext exe_ctx(m_interpreter.GetExecutionContext());
+
+  Target *target = exe_ctx.GetTargetPtr();
+
+  if (!target)
+    target = GetDummyTarget();
+
+  if (!target)
+    return 0;
+
+  unsigned cursor_pos = request.GetRawCursorPos();
+  llvm::StringRef code = request.GetRawLine();
+
+  // Remove the first token which is 'expr' or some alias/abbreviation of that.
+  const std::size_t old_code_size = code.size();
+  code = llvm::getToken(code).second.ltrim();
+
+  // We have an option, so we skip behind those options by looking for "--".
+  if (code.startswith("-")) {
+    // Skip all arguments.
+    llvm::StringRef arg_separator = "--";
+    std::size_t separator_pos = code.find(arg_separator);
+    if (separator_pos != llvm::StringRef::npos) {
+      code = code.substr(separator_pos + arg_separator.size());
+    }
+  }
+
+  // Make the cursor_pos again relative to the start of the code string.
+  cursor_pos -= (old_code_size - code.size());
+  // Drop trailing code, as we anyway don't use it for completion.
+  code = code.substr(0, cursor_pos);
+
+  auto language = exe_ctx.GetFrameRef().GetLanguage();
+
+  Status error;
+  lldb::UserExpressionSP expr(target->GetUserExpressionForLanguage(
+      code, llvm::StringRef(), language, UserExpression::eResultTypeAny,
+      options, error));
+  if (error.Fail())
+    return 0;
+
+  expr->Complete(exe_ctx, request.GetMatches(), cursor_pos);
+  return request.GetMatches().GetSize();
+}
+
 static lldb_private::Status
 CanBeUsedForElementCountPrinting(ValueObject &valobj) {
   CompilerType type(valobj.GetCompilerType());
