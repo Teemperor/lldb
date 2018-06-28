@@ -13,6 +13,7 @@
 // C Includes
 // C++ Includes
 #include <mutex>
+
 // Other libraries and framework includes
 // Project includes
 #include "lldb/Core/Broadcaster.h"
@@ -316,10 +317,7 @@ public:
   // word_complete tells whether the completions are considered a "complete"
   // response (so the completer should complete the quote & put a space after
   // the word.
-  int HandleCompletionMatches(Args &input, int &cursor_index,
-                              int &cursor_char_position, int match_start_point,
-                              int max_return_elements, bool &word_complete,
-                              StringList &matches);
+  int HandleCompletionMatches(CompletionRequest &request);
 
   int GetCommandNamesMatchingPartialString(const char *cmd_cstr,
                                            bool include_aliases,

@@ -16,6 +16,8 @@
 #include <string>
 #include <vector>
 
+#include <lldb/Utility/CompletionRequest.h>
+
 // Other libraries and framework includes
 // Project includes
 #include "lldb/Utility/Flags.h"
@@ -268,10 +270,7 @@ public:
   /// @return
   ///     \btrue if we were in an option, \bfalse otherwise.
   //------------------------------------------------------------------
-  virtual int HandleCompletion(Args &input, int &cursor_index,
-                               int &cursor_char_position, int match_start_point,
-                               int max_return_elements, bool &word_complete,
-                               StringList &matches);
+  virtual int HandleCompletion(CompletionRequest &request);
 
   //------------------------------------------------------------------
   /// The input array contains a parsed version of the line.  The insertion
@@ -317,10 +316,9 @@ public:
   /// @return
   ///     The number of completions.
   //------------------------------------------------------------------
-  virtual int HandleArgumentCompletion(
-      Args &input, int &cursor_index, int &cursor_char_position,
-      OptionElementVector &opt_element_vector, int match_start_point,
-      int max_return_elements, bool &word_complete, StringList &matches) {
+  virtual int
+  HandleArgumentCompletion(CompletionRequest &request,
+                           OptionElementVector &opt_element_vector) {
     return 0;
   }
 
