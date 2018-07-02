@@ -55,11 +55,8 @@ CommandCompletions::CommonCompletionElement
         {eNoCompletion, nullptr} // This one has to be last in the list.
 };
 
-bool CommandCompletions::InvokeCommonCompletionCallbacks(
-    CommandInterpreter &interpreter, uint32_t completion_mask,
-    llvm::StringRef completion_str, int match_start_point,
-    int max_return_elements, SearchFilter *searcher, bool &word_complete,
-    StringList &matches) {
+bool CommandCompletions::InvokeCommonCompletionCallbacks(CommandInterpreter &interpreter, uint32_t completion_mask,
+    CompletionRequest& request, SearchFilter *searcher) {
   bool handled = false;
 
   if (completion_mask & eCustomCompletion)
@@ -72,25 +69,20 @@ bool CommandCompletions::InvokeCommonCompletionCallbacks(
                  g_common_completions[i].type &&
              g_common_completions[i].callback != nullptr) {
       handled = true;
-      g_common_completions[i].callback(interpreter, completion_str,
-                                       match_start_point, max_return_elements,
-                                       searcher, word_complete, matches);
+      g_common_completions[i].callback(interpreter, request, searcher);
     }
   }
   return handled;
 }
 
 int CommandCompletions::SourceFiles(CommandInterpreter &interpreter,
-                                    llvm::StringRef partial_file_name,
-                                    int match_start_point,
-                                    int max_return_elements,
-                                    SearchFilter *searcher, bool &word_complete,
-                                    StringList &matches) {
+                                    CompletionRequest &request,
+                                    SearchFilter *searcher) {
   word_complete = true;
   // Find some way to switch "include support files..."
-  SourceFileCompleter completer(interpreter, false, partial_file_name,
-                                match_start_point, max_return_elements,
-                                matches);
+  SourceFileCompleter completer(interpreter, false, request,
+                                request.GetMatchStartPoint(), request.GetMaxReturnElements(),
+                                request.GetMatches());
 
   if (searcher == nullptr) {
     lldb::TargetSP target_sp = interpreter.GetDebugger().GetSelectedTarget();
@@ -99,11 +91,11 @@ int CommandCompletions::SourceFiles(CommandInterpreter &interpreter,
   } else {
     completer.DoCompletion(searcher);
   }
-  return matches.GetSize();
+  return request.GetMatches().GetSize();
 }
 
 static int DiskFilesOrDirectories(const llvm::Twine &partial_name,
-                                  bool only_directories, bool &saw_directory,
+                                  bool only_directories,
                                   StringList &matches,
                                   TildeExpressionResolver &Resolver) {
   matches.Clear();
@@ -138,13 +130,11 @@ static int DiskFilesOrDirectories(const llvm::Twine &partial_name,
       // but after that, we're done regardless of any matches.
       if (FirstSep == llvm::StringRef::npos) {
         llvm::StringSet<> MatchSet;
-        saw_directory = Resolver.ResolvePartial(Username, MatchSet);
         for (const auto &S : MatchSet) {
           Resolved = S.getKey();
           path::append(Resolved, path::get_separator());
           matches.AppendString(Resolved);
         }
-        saw_directory = (matches.GetSize() > 0);
       }
       return matches.GetSize();
     }
@@ -155,7 +145,6 @@ static int DiskFilesOrDirectories(const llvm::Twine &partial_name,
     if (FirstSep == llvm::StringRef::npos) {
       // Make sure it ends with a separator.
       path::append(CompletionBuffer, path::get_separator());
-      saw_directory = true;
       matches.AppendString(CompletionBuffer);
       return 1;
     }
@@ -227,7 +216,6 @@ static int DiskFilesOrDirectories(const llvm::Twine &partial_name,
     CompletionBuffer.append(Name);
 
     if (is_dir) {
-      saw_directory = true;
       path::append(CompletionBuffer, path::get_separator());
     }
 
@@ -238,51 +226,40 @@ static int DiskFilesOrDirectories(const llvm::Twine &partial_name,
 }
 
 int CommandCompletions::DiskFiles(CommandInterpreter &interpreter,
-                                  llvm::StringRef partial_file_name,
-                                  int match_start_point,
-                                  int max_return_elements,
-                                  SearchFilter *searcher, bool &word_complete,
-                                  StringList &matches) {
+                                  CompletionRequest &request,
+                                  SearchFilter *searcher) {
   word_complete = false;
   StandardTildeExpressionResolver Resolver;
-  return DiskFiles(partial_file_name, matches, Resolver);
+  return DiskFiles(request, request.GetMatches(), Resolver);
 }
 
 int CommandCompletions::DiskFiles(const llvm::Twine &partial_file_name,
                                   StringList &matches,
                                   TildeExpressionResolver &Resolver) {
-  bool word_complete;
-  int ret_val = DiskFilesOrDirectories(partial_file_name, false, word_complete,
+  int ret_val = DiskFilesOrDirectories(partial_file_name, false,
                                        matches, Resolver);
   return ret_val;
 }
 
-int CommandCompletions::DiskDirectories(
-    CommandInterpreter &interpreter, llvm::StringRef partial_file_name,
-    int match_start_point, int max_return_elements, SearchFilter *searcher,
-    bool &word_complete, StringList &matches) {
+int CommandCompletions::DiskDirectories(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
   word_complete = false;
   StandardTildeExpressionResolver Resolver;
-  return DiskDirectories(partial_file_name, matches, Resolver);
+  return DiskDirectories(request, request.GetMatches(), Resolver);
 }
 
 int CommandCompletions::DiskDirectories(const llvm::Twine &partial_file_name,
                                         StringList &matches,
                                         TildeExpressionResolver &Resolver) {
-  bool word_complete;
-  int ret_val = DiskFilesOrDirectories(partial_file_name, true, word_complete,
+  int ret_val = DiskFilesOrDirectories(partial_file_name, true,
                                        matches, Resolver);
   return ret_val;
 }
 
 int CommandCompletions::Modules(CommandInterpreter &interpreter,
-                                llvm::StringRef partial_file_name,
-                                int match_start_point, int max_return_elements,
-                                SearchFilter *searcher, bool &word_complete,
-                                StringList &matches) {
-  word_complete = true;
-  ModuleCompleter completer(interpreter, partial_file_name, match_start_point,
-                            max_return_elements, matches);
+                                CompletionRequest &request,
+                                SearchFilter *searcher) {
+  request.SetWordComplete(true);
+  ModuleCompleter completer(interpreter, request);
 
   if (searcher == nullptr) {
     lldb::TargetSP target_sp = interpreter.GetDebugger().GetSelectedTarget();
@@ -291,17 +268,14 @@ int CommandCompletions::Modules(CommandInterpreter &interpreter,
   } else {
     completer.DoCompletion(searcher);
   }
-  return matches.GetSize();
+  return request.GetMatches().GetSize();
 }
 
 int CommandCompletions::Symbols(CommandInterpreter &interpreter,
-                                llvm::StringRef partial_file_name,
-                                int match_start_point, int max_return_elements,
-                                SearchFilter *searcher, bool &word_complete,
-                                StringList &matches) {
+                                CompletionRequest &request,
+                                SearchFilter *searcher) {
   word_complete = true;
-  SymbolCompleter completer(interpreter, partial_file_name, match_start_point,
-                            max_return_elements, matches);
+  SymbolCompleter completer(interpreter, request);
 
   if (searcher == nullptr) {
     lldb::TargetSP target_sp = interpreter.GetDebugger().GetSelectedTarget();
@@ -310,13 +284,10 @@ int CommandCompletions::Symbols(CommandInterpreter &interpreter,
   } else {
     completer.DoCompletion(searcher);
   }
-  return matches.GetSize();
+  return request.GetMatches().GetSize();
 }
 
-int CommandCompletions::SettingsNames(
-    CommandInterpreter &interpreter, llvm::StringRef partial_setting_name,
-    int match_start_point, int max_return_elements, SearchFilter *searcher,
-    bool &word_complete, StringList &matches) {
+int CommandCompletions::SettingsNames(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
   // Cache the full setting name list
   static StringList g_property_names;
   if (g_property_names.GetSize() == 0) {
@@ -333,8 +304,8 @@ int CommandCompletions::SettingsNames(
 
   size_t exact_matches_idx = SIZE_MAX;
   const size_t num_matches = g_property_names.AutoComplete(
-      partial_setting_name, matches, exact_matches_idx);
-  word_complete = exact_matches_idx != SIZE_MAX;
+      request, request.GetMatches(), exact_matches_idx);
+  request.SetWordComplete(exact_matches_idx != SIZE_MAX);
   return num_matches;
 }
 
@@ -348,31 +319,20 @@ int CommandCompletions::PlatformPluginNames(
   return num_matches;
 }
 
-int CommandCompletions::ArchitectureNames(
-    CommandInterpreter &interpreter, llvm::StringRef partial_name,
-    int match_start_point, int max_return_elements, SearchFilter *searcher,
-    bool &word_complete, lldb_private::StringList &matches) {
-  const uint32_t num_matches = ArchSpec::AutoComplete(partial_name, matches);
+int CommandCompletions::ArchitectureNames(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
+  const uint32_t num_matches = ArchSpec::AutoComplete(request, matches);
   word_complete = num_matches == 1;
   return num_matches;
 }
 
-int CommandCompletions::VariablePath(
-    CommandInterpreter &interpreter, llvm::StringRef partial_name,
-    int match_start_point, int max_return_elements, SearchFilter *searcher,
-    bool &word_complete, lldb_private::StringList &matches) {
-  return Variable::AutoComplete(interpreter.GetExecutionContext(), partial_name,
-                                matches, word_complete);
+int CommandCompletions::VariablePath(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
+  return Variable::AutoComplete(interpreter.GetExecutionContext(), request,
+                                request.GetMatches(), word_complete);
 }
 
 CommandCompletions::Completer::Completer(CommandInterpreter &interpreter,
-                                         llvm::StringRef completion_str,
-                                         int match_start_point,
-                                         int max_return_elements,
-                                         StringList &matches)
-    : m_interpreter(interpreter), m_completion_str(completion_str),
-      m_match_start_point(match_start_point),
-      m_max_return_elements(max_return_elements), m_matches(matches) {}
+                                         CompletionRequest &request)
+    : m_interpreter(interpreter), m_request(request) {}
 
 CommandCompletions::Completer::~Completer() = default;
 
@@ -380,13 +340,9 @@ CommandCompletions::Completer::~Completer() = default;
 // SourceFileCompleter
 //----------------------------------------------------------------------
 
-CommandCompletions::SourceFileCompleter::SourceFileCompleter(
-    CommandInterpreter &interpreter, bool include_support_files,
-    llvm::StringRef completion_str, int match_start_point,
-    int max_return_elements, StringList &matches)
-    : CommandCompletions::Completer(interpreter, completion_str,
-                                    match_start_point, max_return_elements,
-                                    matches),
+CommandCompletions::SourceFileCompleter::SourceFileCompleter(CommandInterpreter &interpreter, bool include_support_files,
+    CompletionRequest &request)
+    : CommandCompletions::Completer(interpreter, request),
       m_include_support_files(include_support_files), m_matching_files() {
   FileSpec partial_spec(m_completion_str, false);
   m_file_name = partial_spec.GetFilename().GetCString();
@@ -465,16 +421,12 @@ static bool regex_chars(const char comp) {
           comp == '\\' || comp == '?');
 }
 
-CommandCompletions::SymbolCompleter::SymbolCompleter(
-    CommandInterpreter &interpreter, llvm::StringRef completion_str,
-    int match_start_point, int max_return_elements, StringList &matches)
-    : CommandCompletions::Completer(interpreter, completion_str,
-                                    match_start_point, max_return_elements,
-                                    matches) {
+CommandCompletions::SymbolCompleter::SymbolCompleter(CommandInterpreter &interpreter, CompletionRequest &request)
+    : CommandCompletions::Completer(interpreter, request) {
   std::string regex_str;
-  if (!completion_str.empty()) {
+  if (!request.empty()) {
     regex_str.append("^");
-    regex_str.append(completion_str);
+    regex_str.append(request);
   } else {
     // Match anything since the completion string is empty
     regex_str.append(".");
@@ -528,12 +480,8 @@ size_t CommandCompletions::SymbolCompleter::DoCompletion(SearchFilter *filter) {
 //----------------------------------------------------------------------
 // ModuleCompleter
 //----------------------------------------------------------------------
-CommandCompletions::ModuleCompleter::ModuleCompleter(
-    CommandInterpreter &interpreter, llvm::StringRef completion_str,
-    int match_start_point, int max_return_elements, StringList &matches)
-    : CommandCompletions::Completer(interpreter, completion_str,
-                                    match_start_point, max_return_elements,
-                                    matches) {
+CommandCompletions::ModuleCompleter::ModuleCompleter(CommandInterpreter &interpreter, CompletionRequest &request)
+    : CommandCompletions::Completer(interpreter, request) {
   FileSpec partial_spec(m_completion_str, false);
   m_file_name = partial_spec.GetFilename().GetCString();
   m_dir_name = partial_spec.GetDirectory().GetCString();
