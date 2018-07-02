@@ -78,11 +78,9 @@ bool CommandCompletions::InvokeCommonCompletionCallbacks(CommandInterpreter &int
 int CommandCompletions::SourceFiles(CommandInterpreter &interpreter,
                                     CompletionRequest &request,
                                     SearchFilter *searcher) {
-  word_complete = true;
+  request.SetWordComplete(true);
   // Find some way to switch "include support files..."
-  SourceFileCompleter completer(interpreter, false, request,
-                                request.GetMatchStartPoint(), request.GetMaxReturnElements(),
-                                request.GetMatches());
+  SourceFileCompleter completer(interpreter, false, request);
 
   if (searcher == nullptr) {
     lldb::TargetSP target_sp = interpreter.GetDebugger().GetSelectedTarget();
@@ -228,31 +226,30 @@ static int DiskFilesOrDirectories(const llvm::Twine &partial_name,
 int CommandCompletions::DiskFiles(CommandInterpreter &interpreter,
                                   CompletionRequest &request,
                                   SearchFilter *searcher) {
-  word_complete = false;
+  request.SetWordComplete(false);
   StandardTildeExpressionResolver Resolver;
-  return DiskFiles(request, request.GetMatches(), Resolver);
+  return DiskFiles(request.GetCursorArgumentPrefix(), request.GetMatches(), Resolver);
 }
 
 int CommandCompletions::DiskFiles(const llvm::Twine &partial_file_name,
                                   StringList &matches,
                                   TildeExpressionResolver &Resolver) {
-  int ret_val = DiskFilesOrDirectories(partial_file_name, false,
+  return DiskFilesOrDirectories(partial_file_name, false,
                                        matches, Resolver);
-  return ret_val;
 }
 
 int CommandCompletions::DiskDirectories(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
-  word_complete = false;
+  request.SetWordComplete(false);
   StandardTildeExpressionResolver Resolver;
-  return DiskDirectories(request, request.GetMatches(), Resolver);
+  return DiskDirectories(request.GetCursorArgumentPrefix(),
+                         request.GetMatches(), Resolver);
 }
 
 int CommandCompletions::DiskDirectories(const llvm::Twine &partial_file_name,
                                         StringList &matches,
                                         TildeExpressionResolver &Resolver) {
-  int ret_val = DiskFilesOrDirectories(partial_file_name, true,
+  return DiskFilesOrDirectories(partial_file_name, true,
                                        matches, Resolver);
-  return ret_val;
 }
 
 int CommandCompletions::Modules(CommandInterpreter &interpreter,
@@ -274,7 +271,7 @@ int CommandCompletions::Modules(CommandInterpreter &interpreter,
 int CommandCompletions::Symbols(CommandInterpreter &interpreter,
                                 CompletionRequest &request,
                                 SearchFilter *searcher) {
-  word_complete = true;
+  request.SetWordComplete(true);
   SymbolCompleter completer(interpreter, request);
 
   if (searcher == nullptr) {
@@ -304,18 +301,15 @@ int CommandCompletions::SettingsNames(CommandInterpreter &interpreter, Completio
 
   size_t exact_matches_idx = SIZE_MAX;
   const size_t num_matches = g_property_names.AutoComplete(
-      request, request.GetMatches(), exact_matches_idx);
+      request.GetCursorArgumentPrefix(), request.GetMatches(), exact_matches_idx);
   request.SetWordComplete(exact_matches_idx != SIZE_MAX);
   return num_matches;
 }
 
-int CommandCompletions::PlatformPluginNames(
-    CommandInterpreter &interpreter, llvm::StringRef partial_name,
-    int match_start_point, int max_return_elements, SearchFilter *searcher,
-    bool &word_complete, lldb_private::StringList &matches) {
+int CommandCompletions::PlatformPluginNames(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
   const uint32_t num_matches =
-      PluginManager::AutoCompletePlatformName(partial_name, matches);
-  word_complete = num_matches == 1;
+      PluginManager::AutoCompletePlatformName(request.GetCursorArgumentPrefix(), request.GetMatches());
+  request.SetWordComplete(num_matches == 1);
   return num_matches;
 }
 

@@ -68,16 +68,14 @@ lldb::OptionValueSP OptionValueUUID::DeepCopy() const {
 }
 
 size_t OptionValueUUID::AutoComplete(CommandInterpreter &interpreter,
-                                     llvm::StringRef s, int match_start_point,
-                                     int max_return_elements,
-                                     bool &word_complete, StringList &matches) {
+                                     CompletionRequest &request) {
   word_complete = false;
   matches.Clear();
   ExecutionContext exe_ctx(interpreter.GetExecutionContext());
   Target *target = exe_ctx.GetTargetPtr();
   if (target) {
     llvm::SmallVector<uint8_t, 20> uuid_bytes;
-    if (UUID::DecodeUUIDBytesFromString(s, uuid_bytes).empty()) {
+    if (UUID::DecodeUUIDBytesFromString(request, uuid_bytes).empty()) {
       const size_t num_modules = target->GetImages().GetSize();
       for (size_t i = 0; i < num_modules; ++i) {
         ModuleSP module_sp(target->GetImages().GetModuleAtIndex(i));

@@ -45,6 +45,8 @@ public:
 
   unsigned GetRawCursorPos() const { return m_raw_cursor_pos; }
 
+  const Args &GetParsedLine() const { return m_parsed_line; }
+
   Args &GetParsedLine() { return m_parsed_line; }
 
   void SetCursorIndex(int i) { m_cursor_index = i; }
@@ -63,6 +65,14 @@ public:
 
   /// The array of matches returned.
   StringList &GetMatches() { return *m_matches; }
+
+  llvm::StringRef GetCursorArgument() const {
+    return GetParsedLine().GetArgumentAtIndex(GetCursorIndex());
+  }
+
+  llvm::StringRef GetCursorArgumentPrefix() const {
+    return GetCursorArgument().substr(0, GetCursorCharPosition());
+  }
 
 private:
   /// The raw command line we are supposed to complete.
