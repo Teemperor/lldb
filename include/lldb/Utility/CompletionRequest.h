@@ -40,12 +40,19 @@ public:
                     int cursor_char_position, int match_start_point,
                     int max_return_elements, bool word_complete,
                     StringList &matches);
+  CompletionRequest(llvm::StringRef command_line, unsigned raw_cursor_pos,
+                    int match_start_point, int max_return_elements,
+                    StringList &matches);
 
   llvm::StringRef GetRawLine() const { return m_command; }
 
   unsigned GetRawCursorPos() const { return m_raw_cursor_pos; }
 
+  const Args &GetParsedLine() const { return m_parsed_line; }
+
   Args &GetParsedLine() { return m_parsed_line; }
+
+  const Args &GetPartialParsedLine() const { return m_partial_parsed_line; }
 
   void SetCursorIndex(int i) { m_cursor_index = i; }
   int GetCursorIndex() const { return m_cursor_index; }
@@ -64,6 +71,14 @@ public:
   /// The array of matches returned.
   StringList &GetMatches() { return *m_matches; }
 
+  llvm::StringRef GetCursorArgument() const {
+    return GetParsedLine().GetArgumentAtIndex(GetCursorIndex());
+  }
+
+  llvm::StringRef GetCursorArgumentPrefix() const {
+    return GetCursorArgument().substr(0, GetCursorCharPosition());
+  }
+
 private:
   /// The raw command line we are supposed to complete.
   llvm::StringRef m_command;
@@ -71,6 +86,8 @@ private:
   unsigned m_raw_cursor_pos;
   /// The command line parsed as arguments.
   Args m_parsed_line;
+  /// The command line parsed as arguments.
+  Args m_partial_parsed_line;
   /// The index of the argument in which the completion cursor is.
   int m_cursor_index;
   /// The cursor position in the argument indexed by m_cursor_index.
@@ -88,6 +105,8 @@ private:
   // We don't own the list.
   StringList *m_matches;
 };
+
+
 
 } // namespace lldb_private
 
