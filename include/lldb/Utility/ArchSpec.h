@@ -10,6 +10,7 @@
 #ifndef LLDB_UTILITY_ARCHSPEC_H
 #define LLDB_UTILITY_ARCHSPEC_H
 
+#include "lldb/Utility/CompletionRequest.h"
 #include "lldb/Utility/ConstString.h"
 #include "lldb/lldb-enumerations.h"
 #include "lldb/lldb-forward.h"

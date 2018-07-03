@@ -268,17 +268,9 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     CommandCompletions::InvokeCommonCompletionCallbacks(
         GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-        completion_str.c_str(), request.GetMatchStartPoint(),
-        request.GetMaxReturnElements(), nullptr, word_complete,
-        request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
     return request.GetMatches().GetSize();
   }
 
@@ -342,17 +334,9 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     CommandCompletions::InvokeCommonCompletionCallbacks(
         GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-        completion_str.c_str(), request.GetMatchStartPoint(),
-        request.GetMaxReturnElements(), nullptr, word_complete,
-        request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
     return request.GetMatches().GetSize();
   }
 
@@ -438,19 +422,10 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    // Attempting to complete variable name
-    bool word_complete = request.GetWordComplete();
     if (request.GetCursorIndex() < 2)
       CommandCompletions::InvokeCommonCompletionCallbacks(
           GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-          completion_str.c_str(), request.GetMatchStartPoint(),
-          request.GetMaxReturnElements(), nullptr, word_complete,
-          request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
     return request.GetMatches().GetSize();
   }
 
@@ -561,19 +536,11 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     // Attempting to complete variable name
     if (request.GetCursorIndex() < 2)
       CommandCompletions::InvokeCommonCompletionCallbacks(
           GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-          completion_str.c_str(), request.GetMatchStartPoint(),
-          request.GetMaxReturnElements(), nullptr, word_complete,
-          request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
 
     return request.GetMatches().GetSize();
   }
@@ -668,19 +635,11 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     // Attempting to complete variable name
     if (request.GetCursorIndex() < 2)
       CommandCompletions::InvokeCommonCompletionCallbacks(
           GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-          completion_str.c_str(), request.GetMatchStartPoint(),
-          request.GetMaxReturnElements(), nullptr, word_complete,
-          request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
 
     return request.GetMatches().GetSize();
   }
@@ -780,19 +739,11 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     // Attempting to complete variable name
     if (request.GetCursorIndex() < 2)
       CommandCompletions::InvokeCommonCompletionCallbacks(
           GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-          completion_str.c_str(), request.GetMatchStartPoint(),
-          request.GetMaxReturnElements(), nullptr, word_complete,
-          request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
 
     return request.GetMatches().GetSize();
   }
@@ -881,19 +832,11 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     // Attempting to complete variable name
     if (request.GetCursorIndex() < 2)
       CommandCompletions::InvokeCommonCompletionCallbacks(
           GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-          completion_str.c_str(), request.GetMatchStartPoint(),
-          request.GetMaxReturnElements(), nullptr, word_complete,
-          request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
 
     return request.GetMatches().GetSize();
   }
@@ -969,19 +912,11 @@ public:
   int HandleArgumentCompletion(
       CompletionRequest &request,
       OptionElementVector &opt_element_vector) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()),
-        request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     // Attempting to complete variable name
     if (request.GetCursorIndex() < 2)
       CommandCompletions::InvokeCommonCompletionCallbacks(
           GetCommandInterpreter(), CommandCompletions::eSettingsNameCompletion,
-          completion_str.c_str(), request.GetMatchStartPoint(),
-          request.GetMaxReturnElements(), nullptr, word_complete,
-          request.GetMatches());
-    request.SetWordComplete(word_complete);
+        request, nullptr);
 
     return request.GetMatches().GetSize();
   }

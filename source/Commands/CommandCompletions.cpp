@@ -314,14 +314,13 @@ int CommandCompletions::PlatformPluginNames(CommandInterpreter &interpreter, Com
 }
 
 int CommandCompletions::ArchitectureNames(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
-  const uint32_t num_matches = ArchSpec::AutoComplete(request, matches);
-  word_complete = num_matches == 1;
+  const uint32_t num_matches = ArchSpec::AutoComplete(request);
+  request.SetWordComplete(num_matches == 1);
   return num_matches;
 }
 
 int CommandCompletions::VariablePath(CommandInterpreter &interpreter, CompletionRequest &request, SearchFilter *searcher) {
-  return Variable::AutoComplete(interpreter.GetExecutionContext(), request,
-                                request.GetMatches(), word_complete);
+  return Variable::AutoComplete(interpreter.GetExecutionContext(), request);
 }
 
 CommandCompletions::Completer::Completer(CommandInterpreter &interpreter,

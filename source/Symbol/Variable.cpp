@@ -755,14 +755,14 @@ static void PrivateAutoComplete(
   }
 }
 
-size_t Variable::AutoComplete(const ExecutionContext &exe_ctx,
-                              llvm::StringRef partial_path, StringList &matches,
-                              bool &word_complete) {
+size_t Variable::AutoComplete(const ExecutionContext &exe_ctx, CompletionRequest &request) {
   word_complete = false;
   CompilerType compiler_type;
 
-  PrivateAutoComplete(exe_ctx.GetFramePtr(), partial_path, "", compiler_type,
-                      matches, word_complete);
+  bool word_complete = false;
+  PrivateAutoComplete(exe_ctx.GetFramePtr(), request.GetCursorArgumentPrefix(), "", compiler_type,
+                      request.GetMatches(), word_complete);
+  request.SetWordComplete(word_complete);
 
   return matches.GetSize();
 }

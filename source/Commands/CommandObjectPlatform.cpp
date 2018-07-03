@@ -179,16 +179,8 @@ public:
   ~CommandObjectPlatformSelect() override = default;
 
   int HandleCompletion(CompletionRequest &request) override {
-    std::string completion_str(
-        request.GetParsedLine().GetArgumentAtIndex(request.GetCursorIndex()));
-    completion_str.erase(request.GetCursorCharPosition());
-
-    bool word_complete = request.GetWordComplete();
     CommandCompletions::PlatformPluginNames(
-        GetCommandInterpreter(), completion_str.c_str(),
-        request.GetMatchStartPoint(), request.GetMaxReturnElements(), nullptr,
-        word_complete, request.GetMatches());
-    request.SetWordComplete(word_complete);
+        GetCommandInterpreter(), request, nullptr);
     return request.GetMatches().GetSize();
   }
 
