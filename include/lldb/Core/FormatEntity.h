@@ -211,9 +211,7 @@ public:
                                     llvm::StringRef &variable_name,
                                     llvm::StringRef &variable_format);
 
-  static size_t AutoComplete(llvm::StringRef s, int match_start_point,
-                             int max_return_elements, bool &word_complete,
-                             StringList &matches);
+  static size_t AutoComplete(llvm::StringRef s, lldb_private::CompletionRequest &request);
 
   //----------------------------------------------------------------------
   // Format the current elements into the stream \a s.

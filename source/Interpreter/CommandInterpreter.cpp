@@ -1771,14 +1771,6 @@ int CommandInterpreter::HandleCompletionMatches(CompletionRequest &request) {
 int CommandInterpreter::HandleCompletion(
     const char *current_line, const char *cursor, const char *last_char,
     int match_start_point, int max_return_elements, StringList &matches) {
-  // We parse the argument up to the cursor, so the last argument in
-  // parsed_line is the one containing the cursor, and the cursor is after the
-  // last character.
-
-  llvm::StringRef command_line(current_line, last_char - current_line);
-  Args parsed_line(command_line);
-  Args partial_parsed_line(
-      llvm::StringRef(current_line, cursor - current_line));
 
   // Don't complete comments, and if the line we are completing is just the
   // history repeat character, substitute the appropriate history line.
@@ -1795,6 +1787,15 @@ int CommandInterpreter::HandleCompletion(
         return 0;
     }
   }
+
+  // We parse the argument up to the cursor, so the last argument in
+  // parsed_line is the one containing the cursor, and the cursor is after the
+  // last character.
+
+  llvm::StringRef command_line(current_line, last_char - current_line);
+  Args parsed_line(command_line);
+  Args partial_parsed_line(
+      llvm::StringRef(current_line, cursor - current_line));
 
   int num_args = partial_parsed_line.GetArgumentCount();
   int cursor_index = partial_parsed_line.GetArgumentCount() - 1;
@@ -1825,8 +1826,6 @@ int CommandInterpreter::HandleCompletion(
     }
   }
 
-  int num_command_matches;
-
   matches.Clear();
 
   // Only max_return_elements == -1 is supported at present:
@@ -1838,7 +1837,7 @@ int CommandInterpreter::HandleCompletion(
                             match_start_point, max_return_elements,
                             word_complete, matches);
 
-  num_command_matches = HandleCompletionMatches(request);
+  int num_command_matches = HandleCompletionMatches(request);
   word_complete = request.GetWordComplete();
 
   if (num_command_matches <= 0)

@@ -2344,12 +2344,10 @@ static void AddMatches(const FormatEntity::Entry::Definition *def,
   }
 }
 
-size_t FormatEntity::AutoComplete(llvm::StringRef str, int match_start_point,
-                                  int max_return_elements, bool &word_complete,
-                                  StringList &matches) {
-  word_complete = false;
-  str = str.drop_front(match_start_point);
-  matches.Clear();
+size_t FormatEntity::AutoComplete(llvm::StringRef str, CompletionRequest &request) {
+  request.SetWordComplete(false);
+  str = str.drop_front(request.GetMatchStartPoint());
+  request.GetMatches().Clear();
 
   const size_t dollar_pos = str.rfind('$');
   if (dollar_pos == llvm::StringRef::npos)
@@ -2359,7 +2357,7 @@ size_t FormatEntity::AutoComplete(llvm::StringRef str, int match_start_point,
   if (dollar_pos == str.size() - 1) {
     std::string match = str.str();
     match.append("{");
-    matches.AppendString(match);
+    request.GetMatches().AppendString(match);
     return 1;
   }
 
