@@ -245,15 +245,19 @@ struct ArchDefinition {
   const char *name;
 };
 
+void ArchSpec::ListSupportedArchNames(StringList &list) {
+  for (uint32_t i = 0; i < llvm::array_lengthof(g_core_definitions); ++i)
+    list.AppendString(g_core_definitions[i].name);
+}
+
 size_t ArchSpec::AutoComplete(CompletionRequest &request) {
   if (!request.GetCursorArgumentPrefix().empty()) {
     for (uint32_t i = 0; i < llvm::array_lengthof(g_core_definitions); ++i) {
       if (NameMatches(g_core_definitions[i].name, NameMatch::StartsWith, request.GetCursorArgumentPrefix()))
-        request.GetMatches(.AppendString(g_core_definitions[i].name);
+        request.GetMatches().AppendString(g_core_definitions[i].name);
     }
   } else {
-    for (uint32_t i = 0; i < llvm::array_lengthof(g_core_definitions); ++i)
-      request.GetMatches().AppendString(g_core_definitions[i].name);
+    ListSupportedArchNames(request.GetMatches());
   }
   return request.GetMatches().GetSize();
 }

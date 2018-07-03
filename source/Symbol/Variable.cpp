@@ -756,7 +756,6 @@ static void PrivateAutoComplete(
 }
 
 size_t Variable::AutoComplete(const ExecutionContext &exe_ctx, CompletionRequest &request) {
-  word_complete = false;
   CompilerType compiler_type;
 
   bool word_complete = false;
@@ -764,5 +763,5 @@ size_t Variable::AutoComplete(const ExecutionContext &exe_ctx, CompletionRequest
                       request.GetMatches(), word_complete);
   request.SetWordComplete(word_complete);
 
-  return matches.GetSize();
+  return request.GetMatches().GetSize();
 }

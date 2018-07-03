@@ -75,7 +75,7 @@ size_t OptionValueUUID::AutoComplete(CommandInterpreter &interpreter,
   Target *target = exe_ctx.GetTargetPtr();
   if (target) {
     llvm::SmallVector<uint8_t, 20> uuid_bytes;
-    if (UUID::DecodeUUIDBytesFromString(request, uuid_bytes).empty()) {
+    if (UUID::DecodeUUIDBytesFromString(request.GetCursorArgumentPrefix(), uuid_bytes).empty()) {
       const size_t num_modules = target->GetImages().GetSize();
       for (size_t i = 0; i < num_modules; ++i) {
         ModuleSP module_sp(target->GetImages().GetModuleAtIndex(i));
@@ -92,5 +92,5 @@ size_t OptionValueUUID::AutoComplete(CommandInterpreter &interpreter,
       }
     }
   }
-  return matches.GetSize();
+  return request.GetMatches().GetSize();
 }

@@ -337,7 +337,7 @@ CommandCompletions::SourceFileCompleter::SourceFileCompleter(CommandInterpreter 
     CompletionRequest &request)
     : CommandCompletions::Completer(interpreter, request),
       m_include_support_files(include_support_files), m_matching_files() {
-  FileSpec partial_spec(m_completion_str, false);
+  FileSpec partial_spec(m_request.GetCursorArgumentPrefix(), false);
   m_file_name = partial_spec.GetFilename().GetCString();
   m_dir_name = partial_spec.GetDirectory().GetCString();
 }
@@ -397,10 +397,10 @@ CommandCompletions::SourceFileCompleter::DoCompletion(SearchFilter *filter) {
   filter->Search(*this);
   // Now convert the filelist to completions:
   for (size_t i = 0; i < m_matching_files.GetSize(); i++) {
-    m_matches.AppendString(
+    m_request.GetMatches().AppendString(
         m_matching_files.GetFileSpecAtIndex(i).GetFilename().GetCString());
   }
-  return m_matches.GetSize();
+  return m_request.GetMatches().GetSize();
 }
 
 //----------------------------------------------------------------------
@@ -417,9 +417,9 @@ static bool regex_chars(const char comp) {
 CommandCompletions::SymbolCompleter::SymbolCompleter(CommandInterpreter &interpreter, CompletionRequest &request)
     : CommandCompletions::Completer(interpreter, request) {
   std::string regex_str;
-  if (!request.empty()) {
+  if (!m_request.GetCursorArgumentPrefix().empty()) {
     regex_str.append("^");
-    regex_str.append(request);
+    regex_str.append(m_request.GetCursorArgumentPrefix());
   } else {
     // Match anything since the completion string is empty
     regex_str.append(".");
@@ -465,9 +465,9 @@ size_t CommandCompletions::SymbolCompleter::DoCompletion(SearchFilter *filter) {
   filter->Search(*this);
   collection::iterator pos = m_match_set.begin(), end = m_match_set.end();
   for (pos = m_match_set.begin(); pos != end; pos++)
-    m_matches.AppendString((*pos).GetCString());
+    m_request.GetMatches().AppendString((*pos).GetCString());
 
-  return m_matches.GetSize();
+  return m_request.GetMatches().GetSize();
 }
 
 //----------------------------------------------------------------------
@@ -475,7 +475,7 @@ size_t CommandCompletions::SymbolCompleter::DoCompletion(SearchFilter *filter) {
 //----------------------------------------------------------------------
 CommandCompletions::ModuleCompleter::ModuleCompleter(CommandInterpreter &interpreter, CompletionRequest &request)
     : CommandCompletions::Completer(interpreter, request) {
-  FileSpec partial_spec(m_completion_str, false);
+  FileSpec partial_spec(m_request.GetCursorArgumentPrefix(), false);
   m_file_name = partial_spec.GetFilename().GetCString();
   m_dir_name = partial_spec.GetDirectory().GetCString();
 }
@@ -503,7 +503,7 @@ Searcher::CallbackReturn CommandCompletions::ModuleCompleter::SearchCallback(
       match = false;
 
     if (match) {
-      m_matches.AppendString(cur_file_name);
+      m_request.GetMatches().AppendString(cur_file_name);
     }
   }
   return Searcher::eCallbackReturnContinue;
@@ -511,5 +511,5 @@ Searcher::CallbackReturn CommandCompletions::ModuleCompleter::SearchCallback(
 
 size_t CommandCompletions::ModuleCompleter::DoCompletion(SearchFilter *filter) {
   filter->Search(*this);
-  return m_matches.GetSize();
+  return m_request.GetMatches().GetSize();
 }

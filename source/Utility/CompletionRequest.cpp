@@ -26,10 +26,10 @@ CompletionRequest::CompletionRequest(llvm::StringRef command,
       m_word_complete(word_complete), m_matches(&matches) {}
 
 CompletionRequest::CompletionRequest(llvm::StringRef command_line, unsigned raw_cursor_pos, int match_start_point, int max_return_elements, StringList &matches)
-  : m_command(command), m_raw_cursor_pos(raw_cursor_pos),
+  : m_command(command_line), m_raw_cursor_pos(raw_cursor_pos),
     m_match_start_point(match_start_point),
     m_max_return_elements(max_return_elements),
-    m_matches(matches) {
+    m_matches(&matches) {
 
   // We parse the argument up to the cursor, so the last argument in
   // parsed_line is the one containing the cursor, and the cursor is after the
@@ -45,7 +45,10 @@ CompletionRequest::CompletionRequest(llvm::StringRef command_line, unsigned raw_
     m_cursor_char_position =
         strlen(m_partial_parsed_line.GetArgumentAtIndex(m_cursor_index));
 
-  if (cursor > current_line && cursor[-1] == ' ') {
+  matches.Clear();
+
+  const char *cursor = command_line.data() + raw_cursor_pos;
+  if (raw_cursor_pos > 0 && cursor[-1] == ' ') {
     // We are just after a space.  If we are in an argument, then we will
     // continue parsing, but if we are between arguments, then we have to
     // complete whatever the next element would be. We can distinguish the two
@@ -64,5 +67,4 @@ CompletionRequest::CompletionRequest(llvm::StringRef command_line, unsigned raw_
       }
   }
 
-  matches.Clear();
 }

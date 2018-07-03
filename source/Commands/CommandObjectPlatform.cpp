@@ -1553,12 +1553,10 @@ public:
       return llvm::makeArrayRef(g_platform_process_attach_options);
     }
 
-    bool HandleOptionArgumentCompletion(
-        Args &input, int cursor_index, int char_pos,
-        OptionElementVector &opt_element_vector, int opt_element_index,
-        int match_start_point, int max_return_elements,
-        CommandInterpreter &interpreter, bool &word_complete,
-        StringList &matches) override {
+    bool HandleOptionArgumentCompletion(CompletionRequest &request,
+        OptionElementVector &opt_element_vector,
+        CommandInterpreter &interpreter) override {
+      unsigned opt_element_index = request.GetCursorIndex();
       int opt_arg_pos = opt_element_vector[opt_element_index].opt_arg_pos;
       int opt_defs_index = opt_element_vector[opt_element_index].opt_defs_index;
 
@@ -1571,7 +1569,7 @@ public:
         // plugin, otherwise use the default plugin.
 
         const char *partial_name = nullptr;
-        partial_name = input.GetArgumentAtIndex(opt_arg_pos);
+        partial_name = request.GetParsedLine().GetArgumentAtIndex(opt_arg_pos);
 
         PlatformSP platform_sp(interpreter.GetPlatform(true));
         if (platform_sp) {
@@ -1586,7 +1584,7 @@ public:
           const uint32_t num_matches = process_infos.GetSize();
           if (num_matches > 0) {
             for (uint32_t i = 0; i < num_matches; ++i) {
-              matches.AppendString(
+              request.GetMatches().AppendString(
                   process_infos.GetProcessNameAtIndex(i),
                   process_infos.GetProcessNameLengthAtIndex(i));
             }

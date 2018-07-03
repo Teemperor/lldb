@@ -289,7 +289,8 @@ public:
   //---------------------------------------------------------------------------
   static bool ContainsOnlyArch(const llvm::Triple &normalized_triple);
 
-  static size_t AutoComplete(llvm::StringRef name, StringList &matches);
+  static void ListSupportedArchNames(StringList &list);
+  static size_t AutoComplete(CompletionRequest &request);
 
   //------------------------------------------------------------------
   /// Returns a static string representing the current architecture.
