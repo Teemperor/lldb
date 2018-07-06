@@ -289,6 +289,10 @@ public:
   //------------------------------------------------------------------
   void Clear();
 
+  llvm::StringRef getRawSuffix() const {
+    return m_raw_suffix;
+  }
+
   static const char *StripSpaces(std::string &s, bool leading = true,
                                  bool trailing = true,
                                  bool return_null_if_empty = true);

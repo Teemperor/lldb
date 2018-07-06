@@ -169,6 +169,7 @@ Args::Args(const Args &rhs) { *this = rhs; }
 Args::Args(const StringList &list) : Args() {
   for (size_t i = 0; i < list.GetSize(); ++i)
     AppendArgument(list[i]);
+  m_raw_suffix = "";
 }
 
 Args &Args::operator=(const Args &rhs) {
@@ -384,6 +385,7 @@ void Args::Clear() {
   m_entries.clear();
   m_argv.clear();
   m_argv.push_back(nullptr);
+  m_raw_suffix.clear();
 }
 
 const char *Args::StripSpaces(std::string &s, bool leading, bool trailing,

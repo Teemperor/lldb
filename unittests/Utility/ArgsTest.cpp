@@ -189,3 +189,31 @@ TEST(ArgsTest, GetArgumentArrayRef) {
   EXPECT_STREQ("foo", ref[0]);
   EXPECT_STREQ("bar", ref[1]);
 }
+
+TEST(ArgsTest, RawSuffixEmpty) {
+  Args args;
+  args.SetCommandString("-i --");
+  EXPECT_STREQ(args.getRawSuffix().str().data(), "");
+  EXPECT_EQ(args.GetArgumentCount(), 2u);
+}
+
+TEST(ArgsTest, RawSuffixBasic) {
+  Args args;
+  args.SetCommandString("-i -- some_code");
+  EXPECT_STREQ(args.getRawSuffix().str().data(), "some_code");
+  EXPECT_EQ(args.GetArgumentCount(), 3u);
+}
+
+TEST(ArgsTest, RawSuffixSpaces) {
+  Args args;
+  args.SetCommandString("-i -- some_code is here");
+  EXPECT_STREQ(args.getRawSuffix().str().data(), "some_code is here");
+  EXPECT_EQ(args.GetArgumentCount(), 5u);
+}
+
+TEST(ArgsTest, RawSuffixNoArgs) {
+  Args args;
+  args.SetCommandString("-- some_code is here");
+  EXPECT_STREQ(args.getRawSuffix().str().data(), "some_code is here");
+  EXPECT_EQ(args.GetArgumentCount(), 4u);
+}

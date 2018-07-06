@@ -338,19 +338,16 @@ int CommandObjectExpression::HandleCompletion(CompletionRequest &request) {
 
   unsigned cursor_pos = request.GetRawCursorPos();
   llvm::StringRef code = request.GetRawLine();
-
-  // Remove the first token which is 'expr' or some alias/abbreviation of that.
   const std::size_t old_code_size = code.size();
-  code = llvm::getToken(code).second.ltrim();
 
-  // We have an option, so we skip behind those options by looking for "--".
-  if (code.startswith("-")) {
-    // Skip all arguments.
-    llvm::StringRef arg_separator = "--";
-    std::size_t separator_pos = code.find(arg_separator);
-    if (separator_pos != llvm::StringRef::npos) {
-      code = code.substr(separator_pos + arg_separator.size());
-    }
+  Args original_args(code);
+  llvm::StringRef raw_suffix = original_args.getRawSuffix();
+
+  if (raw_suffix.empty()) {
+    // Remove the first token which is 'expr' or some alias of that.
+    code = llvm::getToken(code).second.ltrim();
+  } else {
+    code = raw_suffix;
   }
 
   // Make the cursor_pos again relative to the start of the code string.
