@@ -190,21 +190,21 @@ int CommandObjectMultiword::HandleCompletion(CompletionRequest &request) {
   // Any of the command matches will provide a complete word, otherwise the
   // individual completers will override this.
   request.SetWordComplete(true);
-  auto &matches = request.GetMatches();
 
   auto arg0 = request.GetParsedLine()[0].ref;
   if (request.GetCursorIndex() == 0) {
-    AddNamesMatchingPartialString(m_subcommand_dict, arg0, matches);
+    StringList new_matches;
+    AddNamesMatchingPartialString(m_subcommand_dict, arg0, new_matches);
+    request.AddMatches(new_matches);
 
-    if (matches.GetSize() == 1 && matches.GetStringAtIndex(0) != nullptr &&
-        (arg0 == matches.GetStringAtIndex(0))) {
+    if (new_matches.GetSize() == 1 && new_matches.GetStringAtIndex(0) != nullptr &&
+        (arg0 == new_matches.GetStringAtIndex(0))) {
       StringList temp_matches;
       CommandObject *cmd_obj = GetSubcommandObject(arg0, &temp_matches);
       if (cmd_obj != nullptr) {
         if (request.GetParsedLine().GetArgumentCount() == 1) {
           request.SetWordComplete(true);
         } else {
-          matches.DeleteStringAtIndex(0);
           request.GetParsedLine().Shift();
           request.SetCursorCharPosition(0);
           request.GetParsedLine().AppendArgument(llvm::StringRef());
@@ -212,14 +212,17 @@ int CommandObjectMultiword::HandleCompletion(CompletionRequest &request) {
         }
       }
     }
-    return matches.GetSize();
+    return new_matches.GetSize();
   } else {
-    CommandObject *sub_command_object = GetSubcommandObject(arg0, &matches);
+    StringList new_matches;
+    CommandObject *sub_command_object = GetSubcommandObject(arg0, &new_matches);
     if (sub_command_object == nullptr) {
-      return matches.GetSize();
+      request.AddMatches(new_matches);
+      return request.GetNumberOfMatches();
     } else {
       // Remove the one match that we got from calling GetSubcommandObject.
-      matches.DeleteStringAtIndex(0);
+      new_matches.DeleteStringAtIndex(0);
+      request.AddMatches(new_matches);
       request.GetParsedLine().Shift();
       request.SetCursorIndex(request.GetCursorIndex() - 1);
       return sub_command_object->HandleCompletion(request);
@@ -366,7 +369,7 @@ int CommandObjectProxy::HandleCompletion(CompletionRequest &request) {
   CommandObject *proxy_command = GetProxyCommandObject();
   if (proxy_command)
     return proxy_command->HandleCompletion(request);
-  request.GetMatches().Clear();
+  request.ClearMatches();
   return 0;
 }
 
@@ -375,7 +378,7 @@ int CommandObjectProxy::HandleArgumentCompletion(
   CommandObject *proxy_command = GetProxyCommandObject();
   if (proxy_command)
     return proxy_command->HandleArgumentCompletion(request, opt_element_vector);
-  request.GetMatches().Clear();
+  request.ClearMatches();
   return 0;
 }
 

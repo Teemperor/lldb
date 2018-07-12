@@ -112,20 +112,20 @@ lldb::OptionValueSP OptionValueEnumeration::DeepCopy() const {
 size_t OptionValueEnumeration::AutoComplete(CommandInterpreter &interpreter,
                                             CompletionRequest &request) {
   request.SetWordComplete(false);
-  request.GetMatches().Clear();
+  request.ClearMatches();
 
   const uint32_t num_enumerators = m_enumerations.GetSize();
   if (!request.GetCursorArgumentPrefix().empty()) {
     for (size_t i = 0; i < num_enumerators; ++i) {
       llvm::StringRef name = m_enumerations.GetCStringAtIndex(i).GetStringRef();
       if (name.startswith(request.GetCursorArgumentPrefix()))
-        request.GetMatches().AppendString(name);
+        request.AddMatch(name);
     }
   } else {
     // only suggest "true" or "false" by default
     for (size_t i = 0; i < num_enumerators; ++i)
-      request.GetMatches().AppendString(
+      request.AddMatch(
           m_enumerations.GetCStringAtIndex(i).GetStringRef());
   }
-  return request.GetMatches().GetSize();
+  return request.GetNumberOfMatches();
 }

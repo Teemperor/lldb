@@ -34,7 +34,28 @@ TEST(CompletionRequest, Constructor) {
 
   EXPECT_EQ(request.GetPartialParsedLine().GetArgumentCount(), 2u);
   EXPECT_STREQ(request.GetPartialParsedLine().GetArgumentAtIndex(1), "b");
+}
 
-  // This is the generated matches should be equal to our passed string list.
-  EXPECT_EQ(&request.GetMatches(), &matches);
+
+TEST(CompletionRequest, PreventDuplicates) {
+  std::string command = "a bad c";
+  const unsigned cursor_pos = 3;
+  StringList matches;
+
+  CompletionRequest request(command, cursor_pos, 0, 0, matches);
+
+  EXPECT_EQ(0U, matches.GetSize());
+
+  request.AddMatch("foo");
+  EXPECT_EQ(1U, matches.GetSize());
+  EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
+
+  request.AddMatch("foo");
+  EXPECT_EQ(1U, matches.GetSize());
+  EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
+
+  request.AddMatch("foo2");
+  EXPECT_EQ(2U, matches.GetSize());
+  EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
+  EXPECT_STREQ("foo2", matches.GetStringAtIndex(1));
 }

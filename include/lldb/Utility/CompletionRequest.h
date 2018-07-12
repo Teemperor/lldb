@@ -13,6 +13,7 @@
 #include "lldb/Utility/Args.h"
 #include "lldb/Utility/StringList.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/StringSet.h"
 
 namespace lldb_private {
 
@@ -77,8 +78,27 @@ public:
 
   void SetWordComplete(bool v) { m_word_complete = v; }
 
-  /// The array of matches returned.
-  StringList &GetMatches() { return *m_matches; }
+  void ClearMatches() {
+    m_matches->Clear();
+  }
+
+  void AddMatch(llvm::StringRef match) {
+    // Filter out duplicates.
+    if (m_match_set.find(match) != m_match_set.end())
+      return;
+
+    m_matches->AppendString(match.str());
+    m_match_set.insert(match);
+  }
+
+  void AddMatches(const StringList &matches) {
+    for (std::size_t i = 0; i < matches.GetSize(); ++i)
+      AddMatch(matches.GetStringAtIndex(i));
+  }
+
+  std::size_t GetNumberOfMatches() const {
+    return m_matches->GetSize();
+  }
 
   llvm::StringRef GetCursorArgument() const {
     return GetParsedLine().GetArgumentAtIndex(GetCursorIndex());
@@ -113,6 +133,8 @@ private:
   bool m_word_complete = false;
   // We don't own the list.
   StringList *m_matches;
+
+  llvm::StringSet<> m_match_set;
 };
 
 } // namespace lldb_private
