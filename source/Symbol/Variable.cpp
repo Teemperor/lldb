@@ -764,7 +764,7 @@ size_t Variable::AutoComplete(const ExecutionContext &exe_ctx,
   PrivateAutoComplete(exe_ctx.GetFramePtr(), request.GetCursorArgumentPrefix(),
                       "", compiler_type, matches, word_complete);
   request.SetWordComplete(word_complete);
-  request.AddMatches(matches);
+  request.AddCompletions(matches);
 
   return request.GetNumberOfMatches();
 }

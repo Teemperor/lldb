@@ -20,6 +20,7 @@ CompletionRequest::CompletionRequest(llvm::StringRef command_line,
     : m_command(command_line), m_raw_cursor_pos(raw_cursor_pos),
       m_match_start_point(match_start_point),
       m_max_return_elements(max_return_elements), m_matches(&matches) {
+  matches.Clear();
 
   for (std::size_t i = 0; i < matches.GetSize(); ++i)
     m_match_set.insert(matches.GetStringAtIndex(i));

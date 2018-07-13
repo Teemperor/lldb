@@ -575,7 +575,6 @@ bool OptionValue::DumpQualifiedName(Stream &strm) const {
 size_t OptionValue::AutoComplete(CommandInterpreter &interpreter,
                                  CompletionRequest &request) {
   request.SetWordComplete(false);
-  request.ClearMatches();
   return request.GetNumberOfMatches();
 }
 

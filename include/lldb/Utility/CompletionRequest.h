@@ -78,22 +78,22 @@ public:
 
   void SetWordComplete(bool v) { m_word_complete = v; }
 
-  void ClearMatches() {
-    m_matches->Clear();
-  }
-
-  void AddMatch(llvm::StringRef match) {
+  /// Adds a possible completion string. If the completion was already
+  /// suggested before, it will not be added to the list of results.
+  ///
+  /// @param match The suggested completion.
+  void AddCompletion(llvm::StringRef completion) {
     // Filter out duplicates.
-    if (m_match_set.find(match) != m_match_set.end())
+    if (m_match_set.find(completion) != m_match_set.end())
       return;
 
-    m_matches->AppendString(match.str());
-    m_match_set.insert(match);
+    m_matches->AppendString(completion.str());
+    m_match_set.insert(completion);
   }
 
-  void AddMatches(const StringList &matches) {
-    for (std::size_t i = 0; i < matches.GetSize(); ++i)
-      AddMatch(matches.GetStringAtIndex(i));
+  void AddCompletions(const StringList &completions) {
+    for (std::size_t i = 0; i < completions.GetSize(); ++i)
+      AddCompletion(completions.GetStringAtIndex(i));
   }
 
   std::size_t GetNumberOfMatches() const {
@@ -134,6 +134,7 @@ private:
   // We don't own the list.
   StringList *m_matches;
 
+  /// List of added completions so far. Used to filter out duplicates.
   llvm::StringSet<> m_match_set;
 };
 

@@ -102,7 +102,6 @@ lldb::OptionValueSP OptionValueFileSpec::DeepCopy() const {
 size_t OptionValueFileSpec::AutoComplete(CommandInterpreter &interpreter,
                                          CompletionRequest &request) {
   request.SetWordComplete(false);
-  request.ClearMatches();
   CommandCompletions::InvokeCommonCompletionCallbacks(
       interpreter, m_completion_mask, request, nullptr);
   return request.GetNumberOfMatches();

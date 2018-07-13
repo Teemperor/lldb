@@ -255,12 +255,12 @@ size_t ArchSpec::AutoComplete(CompletionRequest &request) {
     for (uint32_t i = 0; i < llvm::array_lengthof(g_core_definitions); ++i) {
       if (NameMatches(g_core_definitions[i].name, NameMatch::StartsWith,
                       request.GetCursorArgumentPrefix()))
-        request.AddMatch(g_core_definitions[i].name);
+        request.AddCompletion(g_core_definitions[i].name);
     }
   } else {
     StringList matches;
     ListSupportedArchNames(matches);
-    request.AddMatches(matches);
+    request.AddCompletions(matches);
   }
   return request.GetNumberOfMatches();
 }

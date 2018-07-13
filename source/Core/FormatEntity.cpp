@@ -2349,7 +2349,6 @@ size_t FormatEntity::AutoComplete(CompletionRequest &request) {
 
   request.SetWordComplete(false);
   str = str.drop_front(request.GetMatchStartPoint());
-  request.ClearMatches();
 
   const size_t dollar_pos = str.rfind('$');
   if (dollar_pos == llvm::StringRef::npos)
@@ -2359,7 +2358,7 @@ size_t FormatEntity::AutoComplete(CompletionRequest &request) {
   if (dollar_pos == str.size() - 1) {
     std::string match = str.str();
     match.append("{");
-    request.AddMatch(match);
+    request.AddCompletion(match);
     return 1;
   }
 
@@ -2379,7 +2378,7 @@ size_t FormatEntity::AutoComplete(CompletionRequest &request) {
     // Suggest all top level entites as we are just past "${"
     StringList new_matches;
     AddMatches(&g_root, str, llvm::StringRef(), new_matches);
-    request.AddMatches(new_matches);
+    request.AddCompletions(new_matches);
     return request.GetNumberOfMatches();
   }
 
@@ -2396,23 +2395,23 @@ size_t FormatEntity::AutoComplete(CompletionRequest &request) {
     // Exact match
     if (n > 0) {
       // "${thread.info" <TAB>
-      request.AddMatch(MakeMatch(str, "."));
+      request.AddCompletion(MakeMatch(str, "."));
     } else {
       // "${thread.id" <TAB>
-      request.AddMatch(MakeMatch(str, "}"));
+      request.AddCompletion(MakeMatch(str, "}"));
       request.SetWordComplete(true);
     }
   } else if (remainder.equals(".")) {
     // "${thread." <TAB>
     StringList new_matches;
     AddMatches(entry_def, str, llvm::StringRef(), new_matches);
-    request.AddMatches(new_matches);
+    request.AddCompletions(new_matches);
   } else {
     // We have a partial match
     // "${thre" <TAB>
     StringList new_matches;
     AddMatches(entry_def, str, remainder, new_matches);
-    request.AddMatches(new_matches);
+    request.AddCompletions(new_matches);
   }
   return request.GetNumberOfMatches();
 }

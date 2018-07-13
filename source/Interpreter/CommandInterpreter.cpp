@@ -1742,7 +1742,7 @@ int CommandInterpreter::HandleCompletionMatches(CompletionRequest &request) {
     StringList new_matches;
     num_command_matches =
         GetCommandNamesMatchingPartialString("", include_aliases, new_matches);
-    request.AddMatches(new_matches);
+    request.AddCompletions(new_matches);
   } else if (request.GetCursorIndex() == 0) {
     // The cursor is in the first argument, so just do a lookup in the
     // dictionary.
@@ -1765,7 +1765,7 @@ int CommandInterpreter::HandleCompletionMatches(CompletionRequest &request) {
         request.SetCursorCharPosition(0);
       }
     }
-    request.AddMatches(new_matches);
+    request.AddCompletions(new_matches);
     num_command_matches = request.GetNumberOfMatches();
   }
 
@@ -1803,7 +1803,6 @@ int CommandInterpreter::HandleCompletion(
       return 0;
     else if (first_arg[0] == CommandHistory::g_repeat_char) {
       if (auto hist_str = m_command_history.FindString(first_arg)) {
-        request.ClearMatches();
         matches.InsertStringAtIndex(0, *hist_str);
         return -2;
       } else

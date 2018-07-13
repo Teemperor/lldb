@@ -37,7 +37,7 @@ TEST(CompletionRequest, Constructor) {
 }
 
 
-TEST(CompletionRequest, PreventDuplicates) {
+TEST(CompletionRequest, DuplicateFiltering) {
   std::string command = "a bad c";
   const unsigned cursor_pos = 3;
   StringList matches;
@@ -46,16 +46,42 @@ TEST(CompletionRequest, PreventDuplicates) {
 
   EXPECT_EQ(0U, matches.GetSize());
 
-  request.AddMatch("foo");
+  // Add foo twice
+  request.AddCompletion("foo");
+  EXPECT_EQ(1U, request.GetNumberOfMatches());
   EXPECT_EQ(1U, matches.GetSize());
   EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
 
-  request.AddMatch("foo");
+  request.AddCompletion("foo");
+  EXPECT_EQ(1U, request.GetNumberOfMatches());
   EXPECT_EQ(1U, matches.GetSize());
   EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
 
-  request.AddMatch("foo2");
+  // Add bar twice
+  request.AddCompletion("bar");
+  EXPECT_EQ(2U, request.GetNumberOfMatches());
   EXPECT_EQ(2U, matches.GetSize());
   EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
-  EXPECT_STREQ("foo2", matches.GetStringAtIndex(1));
+  EXPECT_STREQ("bar", matches.GetStringAtIndex(1));
+
+  request.AddCompletion("bar");
+  EXPECT_EQ(2U, request.GetNumberOfMatches());
+  EXPECT_EQ(2U, matches.GetSize());
+  EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
+  EXPECT_STREQ("bar", matches.GetStringAtIndex(1));
+
+  // Add foo again.
+  request.AddCompletion("foo");
+  EXPECT_EQ(2U, request.GetNumberOfMatches());
+  EXPECT_EQ(2U, matches.GetSize());
+  EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
+  EXPECT_STREQ("bar", matches.GetStringAtIndex(1));
+
+  // Add something with an existing prefix
+  request.AddCompletion("foobar");
+  EXPECT_EQ(3U, request.GetNumberOfMatches());
+  EXPECT_EQ(3U, matches.GetSize());
+  EXPECT_STREQ("foo", matches.GetStringAtIndex(0));
+  EXPECT_STREQ("bar", matches.GetStringAtIndex(1));
+  EXPECT_STREQ("foobar", matches.GetStringAtIndex(2));
 }

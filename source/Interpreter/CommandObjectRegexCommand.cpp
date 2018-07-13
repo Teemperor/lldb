@@ -105,7 +105,6 @@ int CommandObjectRegexCommand::HandleCompletion(CompletionRequest &request) {
         GetCommandInterpreter(), m_completion_type_mask, request, nullptr);
     return request.GetNumberOfMatches();
   } else {
-    request.ClearMatches();
     request.SetWordComplete(false);
   }
   return 0;

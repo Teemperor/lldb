@@ -232,7 +232,7 @@ int CommandCompletions::DiskFiles(CommandInterpreter &interpreter,
   StringList matches;
   int result = DiskFiles(request.GetCursorArgumentPrefix(), matches,
                    Resolver);
-  request.AddMatches(matches);
+  request.AddCompletions(matches);
   return result;
 }
 
@@ -250,7 +250,7 @@ int CommandCompletions::DiskDirectories(CommandInterpreter &interpreter,
   StringList matches;
   int result = DiskDirectories(request.GetCursorArgumentPrefix(),
                          matches, Resolver);
-  request.AddMatches(matches);
+  request.AddCompletions(matches);
   if (result <= 0)
     return result;
   return request.GetNumberOfMatches();
@@ -316,7 +316,7 @@ int CommandCompletions::SettingsNames(CommandInterpreter &interpreter,
   g_property_names.AutoComplete(request.GetCursorArgumentPrefix(),
                                     matches, exact_matches_idx);
   request.SetWordComplete(exact_matches_idx != SIZE_MAX);
-  request.AddMatches(matches);
+  request.AddCompletions(matches);
   return request.GetNumberOfMatches();
 }
 
@@ -327,7 +327,7 @@ int CommandCompletions::PlatformPluginNames(CommandInterpreter &interpreter,
   std::size_t num_matches = PluginManager::AutoCompletePlatformName(
       request.GetCursorArgumentPrefix(), new_matches);
   request.SetWordComplete(num_matches == 1);
-  request.AddMatches(new_matches);
+  request.AddCompletions(new_matches);
   return request.GetNumberOfMatches();
 }
 
@@ -420,7 +420,7 @@ CommandCompletions::SourceFileCompleter::DoCompletion(SearchFilter *filter) {
   filter->Search(*this);
   // Now convert the filelist to completions:
   for (size_t i = 0; i < m_matching_files.GetSize(); i++) {
-    m_request.AddMatch(
+    m_request.AddCompletion(
         m_matching_files.GetFileSpecAtIndex(i).GetFilename().GetCString());
   }
   return m_request.GetNumberOfMatches();
@@ -489,7 +489,7 @@ size_t CommandCompletions::SymbolCompleter::DoCompletion(SearchFilter *filter) {
   filter->Search(*this);
   collection::iterator pos = m_match_set.begin(), end = m_match_set.end();
   for (pos = m_match_set.begin(); pos != end; pos++)
-    m_request.AddMatch((*pos).GetCString());
+    m_request.AddCompletion((*pos).GetCString());
 
   return m_request.GetNumberOfMatches();
 }
@@ -528,7 +528,7 @@ Searcher::CallbackReturn CommandCompletions::ModuleCompleter::SearchCallback(
       match = false;
 
     if (match) {
-      m_request.AddMatch(cur_file_name);
+      m_request.AddCompletion(cur_file_name);
     }
   }
   return Searcher::eCallbackReturnContinue;

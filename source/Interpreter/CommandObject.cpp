@@ -267,7 +267,6 @@ int CommandObject::HandleCompletion(CompletionRequest &request) {
   if (WantsRawCommandString() && !WantsCompletion()) {
     // FIXME: Abstract telling the completion to insert the completion
     // character.
-    request.ClearMatches();
     return -1;
   } else {
     // Can we do anything generic with the options?

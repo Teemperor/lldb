@@ -195,7 +195,7 @@ int CommandObjectMultiword::HandleCompletion(CompletionRequest &request) {
   if (request.GetCursorIndex() == 0) {
     StringList new_matches;
     AddNamesMatchingPartialString(m_subcommand_dict, arg0, new_matches);
-    request.AddMatches(new_matches);
+    request.AddCompletions(new_matches);
 
     if (new_matches.GetSize() == 1 && new_matches.GetStringAtIndex(0) != nullptr &&
         (arg0 == new_matches.GetStringAtIndex(0))) {
@@ -217,12 +217,12 @@ int CommandObjectMultiword::HandleCompletion(CompletionRequest &request) {
     StringList new_matches;
     CommandObject *sub_command_object = GetSubcommandObject(arg0, &new_matches);
     if (sub_command_object == nullptr) {
-      request.AddMatches(new_matches);
+      request.AddCompletions(new_matches);
       return request.GetNumberOfMatches();
     } else {
       // Remove the one match that we got from calling GetSubcommandObject.
       new_matches.DeleteStringAtIndex(0);
-      request.AddMatches(new_matches);
+      request.AddCompletions(new_matches);
       request.GetParsedLine().Shift();
       request.SetCursorIndex(request.GetCursorIndex() - 1);
       return sub_command_object->HandleCompletion(request);
@@ -369,7 +369,6 @@ int CommandObjectProxy::HandleCompletion(CompletionRequest &request) {
   CommandObject *proxy_command = GetProxyCommandObject();
   if (proxy_command)
     return proxy_command->HandleCompletion(request);
-  request.ClearMatches();
   return 0;
 }
 
@@ -378,7 +377,6 @@ int CommandObjectProxy::HandleArgumentCompletion(
   CommandObject *proxy_command = GetProxyCommandObject();
   if (proxy_command)
     return proxy_command->HandleArgumentCompletion(request, opt_element_vector);
-  request.ClearMatches();
   return 0;
 }
 

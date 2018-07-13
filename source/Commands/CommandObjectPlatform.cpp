@@ -1583,7 +1583,7 @@ public:
           const uint32_t num_matches = process_infos.GetSize();
           if (num_matches > 0) {
             for (uint32_t i = 0; i < num_matches; ++i) {
-              request.AddMatch(llvm::StringRef(
+              request.AddCompletion(llvm::StringRef(
                   process_infos.GetProcessNameAtIndex(i),
                   process_infos.GetProcessNameLengthAtIndex(i)));
             }
