@@ -150,14 +150,12 @@ public:
 
   bool Interrupt() override;
 
-  bool ExecuteOneLine(
-      llvm::StringRef command, CommandReturnObject *result,
+  bool ExecuteOneLine(const std::string &command, CommandReturnObject *result,
       const ExecuteScriptOptions &options = ExecuteScriptOptions()) override;
 
   void ExecuteInterpreterLoop() override;
 
-  bool ExecuteOneLineWithReturn(
-      llvm::StringRef in_string,
+  bool ExecuteOneLineWithReturn(const std::string &in_string,
       ScriptInterpreter::ScriptReturnType return_type, void *ret_value,
       const ExecuteScriptOptions &options = ExecuteScriptOptions()) override;
 
