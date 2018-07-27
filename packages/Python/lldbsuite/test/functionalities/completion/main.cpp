@@ -7,8 +7,12 @@ public:
     }
 };
 
+struct Container { int MemberVar; };
+
 int main()
 {
-    Foo f;
-    f.Bar(1, 2);
+    Foo fooo;
+    fooo.Bar(1, 2);
+    Container container;
+    return container.MemberVar = 3; // Break here
 }
