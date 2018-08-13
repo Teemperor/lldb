@@ -28,7 +28,7 @@ public:
   ClangHighlighter();
   llvm::StringRef GetName() const override { return "clang"; }
 
-  std::size_t Highlight(const HighlightStyle &options, llvm::StringRef line,
+  void Highlight(const HighlightStyle &options, llvm::StringRef line,
                         llvm::StringRef previous_lines,
                         Stream &s) const override;
 

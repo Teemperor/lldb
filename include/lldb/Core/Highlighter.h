@@ -45,9 +45,7 @@ struct HighlightStyle {
     ///     The stream to which the result should be appended.
     /// \param value
     ///     The value that we should place our strings around.
-    /// \return
-    ///     The number of bytes that have been written to the given stream.
-    std::size_t Apply(Stream &s, llvm::StringRef value) const;
+    void Apply(Stream &s, llvm::StringRef value) const;
 
     /// Sets the prefix and suffix strings.
     /// @param prefix
@@ -114,9 +112,7 @@ public:
   /// \param s
   ///     The stream to which the highlighted version of the user string should
   ///     be written.
-  /// \return
-  ///     The number of bytes that have been written to the stream.
-  virtual std::size_t Highlight(const HighlightStyle &options,
+  virtual void Highlight(const HighlightStyle &options,
                                 llvm::StringRef line,
                                 llvm::StringRef previous_lines,
                                 Stream &s) const = 0;
@@ -131,7 +127,7 @@ class NoHighlighter : public Highlighter {
 public:
   llvm::StringRef GetName() const override { return "none"; }
 
-  std::size_t Highlight(const HighlightStyle &options, llvm::StringRef line,
+  void Highlight(const HighlightStyle &options, llvm::StringRef line,
                         llvm::StringRef previous_lines,
                         Stream &s) const override;
 };
