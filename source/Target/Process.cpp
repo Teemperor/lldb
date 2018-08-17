@@ -4641,6 +4641,10 @@ public:
 
   void GotEOF() override {}
 
+  bool GetIsDummyHandler() override {
+    return true;
+  }
+
 protected:
   Process *m_process;
   File m_read_file;  // Read from this file (usually actual STDIN for LLDB

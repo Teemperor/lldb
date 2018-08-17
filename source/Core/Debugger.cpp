@@ -1098,7 +1098,8 @@ void Debugger::PushIOHandler(const IOHandlerSP &reader_sp) {
   // this new input reader take over
   if (top_reader_sp) {
     top_reader_sp->Deactivate();
-    top_reader_sp->Cancel();
+    if (!reader_sp->GetIsDummyHandler())
+      top_reader_sp->Cancel();
   }
 }
 

@@ -109,6 +109,16 @@ public:
 
   virtual const char *GetHelpPrologue() { return nullptr; }
 
+  //------------------------------------------------------------------
+  /// Returns true if this IOHandler is a dummy handler created by
+  /// LLDB itself that will be automatically popped later. If such a
+  /// handler is pushed on the IOHandler stack, the previous IOHandler
+  /// will not be cancelled.
+  //------------------------------------------------------------------
+  virtual bool GetIsDummyHandler() {
+    return false;
+  }
+
   int GetInputFD();
 
   int GetOutputFD();
