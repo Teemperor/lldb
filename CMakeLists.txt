@@ -34,6 +34,8 @@ add_subdirectory(docs)
 if (NOT LLDB_DISABLE_PYTHON)
   add_subdirectory(scripts)
 endif ()
+
+add_subdirectory(utils/TableGen)
 add_subdirectory(source)
 add_subdirectory(tools)
 
