@@ -58,6 +58,8 @@ public:
 
   void CalculateTrapHandlerSymbolNames() override;
 
+  bool SupportsModules() override { return true; }
+
   MmapArgList GetMmapArgumentList(const ArchSpec &arch, lldb::addr_t addr,
                                   lldb::addr_t length, unsigned prot,
                                   unsigned flags, lldb::addr_t fd,
