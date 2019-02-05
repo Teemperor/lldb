@@ -287,7 +287,10 @@ bool ClangModulesDeclVendor::LanguageSupportsClangModules(
   switch (language) {
   default:
     return false;
-  // C++ and friends to be added
+  case lldb::LanguageType::eLanguageTypeC_plus_plus:
+  case lldb::LanguageType::eLanguageTypeC_plus_plus_03:
+  case lldb::LanguageType::eLanguageTypeC_plus_plus_11:
+  case lldb::LanguageType::eLanguageTypeC_plus_plus_14:
   case lldb::LanguageType::eLanguageTypeC:
   case lldb::LanguageType::eLanguageTypeC11:
   case lldb::LanguageType::eLanguageTypeC89:

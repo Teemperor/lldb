@@ -61,7 +61,7 @@ public:
   virtual size_t ParseTypes(CompileUnit &comp_unit);
 
   virtual bool ParseImportedModules(const SymbolContext &sc,
-                                    std::vector<ConstString> &imported_modules);
+                                    std::vector<ConstString> &imported_modules, std::vector<ConstString> &module_includes);
 
   virtual size_t ParseBlocksRecursive(Function &func);
 

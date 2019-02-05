@@ -36,6 +36,7 @@
 #include "lldb/Symbol/Block.h"
 #include "lldb/Symbol/ClangASTContext.h"
 #include "lldb/Symbol/ClangExternalASTSourceCommon.h"
+#include "lldb/Symbol/CompileUnit.h"
 #include "lldb/Symbol/Function.h"
 #include "lldb/Symbol/ObjectFile.h"
 #include "lldb/Symbol/SymbolVendor.h"
@@ -436,6 +437,15 @@ bool ClangUserExpression::PrepareForParsing(
 
   SetupDeclVendor(exe_ctx, m_target);
 
+  if (StackFrame *frame = exe_ctx.GetFramePtr()) {
+    if (Block *block = frame->GetFrameBlock()) {
+      SymbolContext sc;
+      block->CalculateSymbolContext(&sc);
+      if (sc.comp_unit)
+        m_include_directories = sc.comp_unit->GetModuleIncludes();
+    }
+  }
+
   UpdateLanguageForExpr(diagnostic_manager, exe_ctx);
   return true;
 }
@@ -495,7 +505,8 @@ bool ClangUserExpression::Parse(DiagnosticManager &diagnostic_manager,
   // succeeds or the rewrite parser we might make if it fails.  But the
   // parser_sp will never be empty.
 
-  ClangExpressionParser parser(exe_scope, *this, generate_debug_info);
+  ClangExpressionParser parser(exe_scope, *this, generate_debug_info,
+                               m_include_directories);
 
   unsigned num_errors = parser.Parse(diagnostic_manager);
 

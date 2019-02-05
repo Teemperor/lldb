@@ -217,11 +217,11 @@ private:
 // Implementation of ClangExpressionParser
 //===----------------------------------------------------------------------===//
 
-ClangExpressionParser::ClangExpressionParser(ExecutionContextScope *exe_scope,
-                                             Expression &expr,
-                                             bool generate_debug_info)
+ClangExpressionParser::ClangExpressionParser(
+    ExecutionContextScope *exe_scope, Expression &expr,
+    bool generate_debug_info, std::vector<ConstString> include_directories)
     : ExpressionParser(exe_scope, expr, generate_debug_info), m_compiler(),
-      m_pp_callbacks(nullptr) {
+      m_pp_callbacks(nullptr), m_include_directories(include_directories) {
   Log *log(lldb_private::GetLogIfAllCategoriesSet(LIBLLDB_LOG_EXPRESSIONS));
 
   // We can't compile expressions without a target.  So if the exe_scope is

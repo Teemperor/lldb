@@ -269,6 +269,17 @@ public:
   const std::vector<ConstString> &GetImportedModules();
 
   //------------------------------------------------------------------
+  /// Get the compile unit's imported module list.
+  ///
+  /// This reports all the imports that the compile unit made, including the
+  /// current module.
+  ///
+  /// @return
+  ///     A list of imported module names.
+  //------------------------------------------------------------------
+  const std::vector<ConstString> &GetModuleIncludes();
+
+  //------------------------------------------------------------------
   /// Get the SymbolFile plug-in user data.
   ///
   /// SymbolFile plug-ins can store user data to internal state or objects to
@@ -426,6 +437,7 @@ protected:
                                                ///current module, imported by
                                                ///this
                                                ///< compile unit.
+  std::vector<ConstString> m_module_includes;
   FileSpecList m_support_files; ///< Files associated with this compile unit's
                                 ///line table and declarations.
   std::unique_ptr<LineTable>
@@ -453,6 +465,8 @@ private:
     flagsParsedDebugMacros =
         (1u << 6) ///< Have we parsed the debug macros already?
   };
+
+  void UpdateModules();
 
   DISALLOW_COPY_AND_ASSIGN(CompileUnit);
 };

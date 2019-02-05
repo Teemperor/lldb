@@ -910,7 +910,8 @@ bool SymbolFileDWARF::ParseIsOptimized(CompileUnit &comp_unit) {
 
 bool SymbolFileDWARF::ParseImportedModules(
     const lldb_private::SymbolContext &sc,
-    std::vector<lldb_private::ConstString> &imported_modules) {
+    std::vector<lldb_private::ConstString> &imported_modules,
+    std::vector<lldb_private::ConstString> &module_includes) {
   ASSERT_MODULE_LOCK(this);
   assert(sc.comp_unit);
   DWARFUnit *dwarf_cu = GetDWARFCompileUnit(sc.comp_unit);
@@ -933,6 +934,11 @@ bool SymbolFileDWARF::ParseImportedModules(
                           DW_AT_name, nullptr)) {
                     ConstString const_name(name);
                     imported_modules.push_back(const_name);
+                  }
+                  if (const char *inc = module_die.GetAttributeValueAsString(
+                          DW_AT_LLVM_include_path, nullptr)) {
+                    ConstString const_inc(inc);
+                    module_includes.push_back(const_inc);
                   }
                 }
               }
