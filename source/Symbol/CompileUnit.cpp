@@ -403,7 +403,7 @@ void CompileUnit::SetVariableList(VariableListSP &variables) {
   m_variables = variables;
 }
 
-const std::vector<ConstString> &CompileUnit::GetImportedModules() {
+const std::vector<CompileUnit::ModulePath> &CompileUnit::GetImportedModules() {
   UpdateModules();
   return m_imported_modules;
 }

@@ -377,7 +377,8 @@ static void SetupDeclVendor(ExecutionContext &exe_ctx, Target *target) {
 }
 
 void ClangUserExpression::UpdateLanguageForExpr(
-    DiagnosticManager &diagnostic_manager, ExecutionContext &exe_ctx) {
+    DiagnosticManager &diagnostic_manager, ExecutionContext &exe_ctx,
+    std::vector<std::string> modules_to_import) {
   m_expr_lang = lldb::LanguageType::eLanguageTypeUnknown;
 
   std::string prefix = m_expr_prefix;
@@ -397,7 +398,7 @@ void ClangUserExpression::UpdateLanguageForExpr(
       m_expr_lang = lldb::eLanguageTypeC;
 
     if (!source_code->GetText(m_transformed_text, m_expr_lang,
-                              m_in_static_method, exe_ctx, {"std"})) {
+                              m_in_static_method, exe_ctx, modules_to_import)) {
       diagnostic_manager.PutString(eDiagnosticSeverityError,
                                    "couldn't construct expression body");
       return;
@@ -437,16 +438,26 @@ bool ClangUserExpression::PrepareForParsing(
 
   SetupDeclVendor(exe_ctx, m_target);
 
+  std::vector<std::string> modules_to_include;
   if (StackFrame *frame = exe_ctx.GetFramePtr()) {
     if (Block *block = frame->GetFrameBlock()) {
       SymbolContext sc;
       block->CalculateSymbolContext(&sc);
-      if (sc.comp_unit)
+      if (sc.comp_unit) {
         m_include_directories = sc.comp_unit->GetModuleIncludes();
+        std::vector<CompileUnit::ModulePath> modules = sc.comp_unit->GetImportedModules();
+
+        for (CompileUnit::ModulePath path : modules) {
+          if (!path.empty() && path.front() == ConstString("std")) {
+            modules_to_include = {"std"};
+            break;
+          }
+        }
+      }
     }
   }
 
-  UpdateLanguageForExpr(diagnostic_manager, exe_ctx);
+  UpdateLanguageForExpr(diagnostic_manager, exe_ctx, modules_to_include);
   return true;
 }
 

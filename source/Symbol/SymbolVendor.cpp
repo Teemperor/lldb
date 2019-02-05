@@ -184,7 +184,7 @@ bool SymbolVendor::ParseIsOptimized(CompileUnit &comp_unit) {
   return false;
 }
 
-bool SymbolVendor::ParseImportedModules(const SymbolContext &sc, std::vector<ConstString> &imported_modules,
+bool SymbolVendor::ParseImportedModules(const SymbolContext &sc, std::vector<SymbolFile::ModulePath> &imported_modules,
     std::vector<ConstString> &module_includes) {
   ModuleSP module_sp(GetModule());
   if (module_sp) {

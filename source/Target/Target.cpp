@@ -3309,7 +3309,7 @@ static constexpr PropertyDefinition g_properties[] = {
     {"auto-import-clang-modules", OptionValue::eTypeBoolean, false, true,
      nullptr, {},
      "Automatically load Clang modules referred to by the program."},
-    {"import-std-value", OptionValue::eTypeBoolean, false, true,
+    {"import-std-module", OptionValue::eTypeBoolean, false, false,
      nullptr, {},
      "Import the C++ std module to improve debugging STL containers."},
     {"auto-apply-fixits", OptionValue::eTypeBoolean, false, true, nullptr,

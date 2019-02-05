@@ -70,7 +70,7 @@ public:
 
   bool
   ParseImportedModules(const SymbolContext &sc,
-                       std::vector<ConstString> &imported_modules,
+                       std::vector<ModulePath> &imported_modules,
                        std::vector<ConstString> &module_includes) override {
     return false;
   }

@@ -669,7 +669,7 @@ bool SymbolFileDWARFDebugMap::ParseIsOptimized(CompileUnit &comp_unit) {
 }
 
 bool SymbolFileDWARFDebugMap::ParseImportedModules(
-    const SymbolContext &sc, std::vector<ConstString> &imported_modules,
+    const SymbolContext &sc, std::vector<ModulePath> &imported_modules,
     std::vector<ConstString> &module_includes) {
   SymbolFileDWARF *oso_dwarf = GetSymbolFile(sc);
   if (oso_dwarf)

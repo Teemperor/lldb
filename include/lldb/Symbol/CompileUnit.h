@@ -257,6 +257,7 @@ public:
   //------------------------------------------------------------------
   FileSpecList &GetSupportFiles();
 
+  typedef std::vector<lldb_private::ConstString> ModulePath;
   //------------------------------------------------------------------
   /// Get the compile unit's imported module list.
   ///
@@ -266,7 +267,7 @@ public:
   /// @return
   ///     A list of imported module names.
   //------------------------------------------------------------------
-  const std::vector<ConstString> &GetImportedModules();
+  const std::vector<ModulePath> &GetImportedModules();
 
   //------------------------------------------------------------------
   /// Get the compile unit's imported module list.
@@ -433,7 +434,8 @@ protected:
 
   /// Maps UIDs to functions.
   llvm::DenseMap<lldb::user_id_t, lldb::FunctionSP> m_functions_by_uid;
-  std::vector<ConstString> m_imported_modules; ///< All modules, including the
+
+  std::vector<ModulePath> m_imported_modules;  ///< All modules, including the
                                                ///current module, imported by
                                                ///this
                                                ///< compile unit.
